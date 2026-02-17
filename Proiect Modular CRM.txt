@@ -1,0 +1,53 @@
+Proiect: Modular CRM Case Study – Design Patterns
+Tehnologie: ASP.NET Core MVC (.NET 8)
+Arhitectură: Clean Architecture (Domain, Application, Infrastructure, WebUI)
+🎯 Obiectivul Proiectului
+Dezvoltarea unei aplicații CRM complexe pentru studiul a 22 de Design Patterns. Proiectul pune accent pe decuplarea componentelor, testabilitate și utilizarea Dependency Injection în locul pattern-ului Singleton, respectând standardele moderne de dezvoltare software.
+🧩 Cele 22 Design Patterns de implementat
+Creaționale: Factory Method, Abstract Factory, Builder, Prototype.
+Structurale: Adapter, Bridge, Composite, Decorator, Facade, Proxy, Flyweight.
+Comportamentale: Strategy, Observer, Command, State, Template Method, Chain of Responsibility, Mediator, Iterator, Visitor, Memento, Interpreter.
+⚙️ Funcționalități Principale CRM
+Pipeline Vânzări: New → Contacted → Qualified → Won / Lost.
+Gestionare: Lead-uri, Clienți, Deal-uri și Activități (Call, Email, Meeting).
+Sistem Notificări: Multi-canal (In-app, Email, SMS).
+Raportare: Conversii, activitate și export date (CSV, JSON).
+Securitate: Roluri (Admin, Agent, Viewer) și validări complexe.
+📑 CERINTE LABORATOR:
+Laborator 1:
+Condiție: 
+Laborator 1 – Recapitulare OOP și Principiile SOLID 
+În cadrul acestui laborator, studenții trebuie să proiecteze, definească și să implementeze un set de clase utlizând conceptele 
+fundamentale ale Programării Orientate pe Obiecte (OOP): încapsulare, moștenire, abstractizare și polimorfism. Fiecare clasă 
+trebuie să respecte principiile SOLID pentru a asigura claritate, flexibilitate și întreținere ușoară a codului. 
+Pași de realizare: 
+1. Definirea structurii aplicației: realizați diagrame UML (diagrama claselor) care descriu entitățile principale din domeniul ales 
+și relațiile dintre acestea. 
+2. Implementarea claselor de bază: creați clasele de bază pentru entitățile principale (doar definiți atributele, metodele). 
+3. Aplicarea principiilor SOLID: 
+- SRP (Single Responsibility Principle): Fiecare clasă trebuie să aibă o singură responsabilitate clar definită. 
+- OCP (Open/Closed Principle): O clasă trebuie să fie deschisă pentru extindere și închisă pentru modificări. 
+- LSP (Liskov Substitution Principle): Subclasele trebuie să poată înlocui clasele de bază fără a afecta funcționalitatea. 
+- ISP (Interface Segregation Principle): Se vor defini interfețe specifice pentru a evita impunerea unor metode inutile 
+asupra claselor. 
+- DIP (Dependency Inversion Principle): Se va utiliza injecția de dependențe pentru a evita legături strânse între module. 
+
+Laborator 2 – Paternurile de proiectare creționale: Factory Method și Abstract Factory 
+În acest laborator, studenții vor explora și implementa două paternuri de proiectare creționale esențiale: Factory Method și 
+Abstract Factory. Aceste paternuri sunt u lizate pentru a ges ona crearea obiectelor într-un mod flexibil, reducând dependențele 
+dintre module și îmbunătățind scalabilitatea aplicației. Fiecare student va implementa o soluție aplicabilă domeniului ales, utilizând 
+aceste paternuri pentru a îmbunătăți modularitatea și reu lizarea codului. 
+Pași de realizare: 
+1. Factory Method: - 
+Crearea unei structuri în care obiectele sunt instanțiate prin intermediul unei metode de fabrică, fără a specifica direct 
+clasa concretă. - - 
+Se vor defini interfețe pentru obiectele ce trebuie create și clase concrete care implementează aceste interfețe. 
+Se va crea o clasă abstractă cu o metodă de fabrică ce returnează un obiect de pul interfeței definite. 
+2. Abstract Factory: - 
+Definirea unei interfețe pentru crearea unei familii de obiecte înrudite fără a specifica clasele concrete. - - 
+Se va implementa o fabrică abstractă care conține metode pentru crearea mai multor puri de obiecte conexe. 
+Se vor crea fabrici concrete care implementează interfața și returnează obiectele specifice domeniului ales. 
+Prezentarea rezultatului:  
+Codul sursă, commit-urile pe GitHub, cum rulează codul, raportul în care să fie scurt descrisă implementarea realizată, diagramele 
+UML pentru paternurile realizate din codul sursă. Fiecare patern trebuie descris: definiția, ce problemă rezolvă și 
+avantaje/dezavantaje 
