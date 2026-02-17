@@ -1,0 +1,85 @@
+@model TMPP_CRM.Controllers.ReportViewModel
+
+@{
+    ViewData["Title"] = "Abstract Factory Demo";
+}
+
+<div class="max-w-5xl mx-auto py-8">
+    <div class="flex flex-col md:flex-row justify-between items-center mb-10 border-b border-gray-200 pb-6">
+        <h2 class="text-3xl font-bold text-gray-900 flex items-center mb-4 md:mb-0">
+            <svg class="w-8 h-8 text-green-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            Abstract Factory Demo
+        </h2>
+        <a href="/Lab2" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition">
+            <svg class="mr-2 -ml-1 h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+            </svg>
+            Înapoi la meniu
+        </a>
+    </div>
+
+    <div class="bg-green-50 border-l-4 border-green-500 p-4 mb-10 rounded-r-md shadow-sm">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                </svg>
+            </div>
+            <div class="ml-3">
+                <h3 class="text-sm font-medium text-green-800">Ce se întâmplă aici?</h3>
+                <div class="mt-2 text-sm text-green-700">
+                    <p>
+                        Selectând un tip de raport, controller-ul instanțiază o fabrică concretă (<code class="bg-green-100 px-1 py-0.5 rounded text-green-900 font-mono">CsvReportFactory</code> sau <code class="bg-green-100 px-1 py-0.5 rounded text-green-900 font-mono">JsonReportFactory</code>).
+                        Aceasta creează o familie completă de obiecte (Header, Body, Footer) care sunt compatibile între ele.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-8 p-6 flex flex-col sm:flex-row items-center justify-center gap-4">
+        <span class="text-gray-700 font-medium mr-2">Alege formatul raportului:</span>
+        <div class="flex space-x-3">
+            <a href="/Lab2/AbstractFactory?type=csv" class="@(Model.Type == "CSV" ? "bg-blue-600 text-white ring-2 ring-offset-2 ring-blue-600" : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-300") px-5 py-2.5 rounded-lg font-medium transition duration-200 flex items-center">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                CSV Format
+            </a>
+            <a href="/Lab2/AbstractFactory?type=json" class="@(Model.Type == "JSON" ? "bg-yellow-500 text-white ring-2 ring-offset-2 ring-yellow-500" : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-300") px-5 py-2.5 rounded-lg font-medium transition duration-200 flex items-center">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                JSON Format
+            </a>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+        <div class="px-6 py-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
+            <h5 class="font-bold text-gray-800 flex items-center">
+                Generated Report
+                <span class="ml-3 px-2.5 py-0.5 rounded-full text-xs font-medium @(Model.Type == "JSON" ? "bg-yellow-100 text-yellow-800" : "bg-blue-100 text-blue-800")">
+                    @Model.Type
+                </span>
+            </h5>
+            <div class="flex space-x-1">
+                <div class="w-3 h-3 rounded-full bg-red-400"></div>
+                <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
+                <div class="w-3 h-3 rounded-full bg-green-400"></div>
+            </div>
+        </div>
+        <div class="p-6 bg-gray-900 font-mono text-sm text-gray-300 overflow-x-auto">
+            <div class="mb-4">
+                <div class="text-xs uppercase tracking-wider text-gray-500 mb-1 border-b border-gray-700 pb-1">Header Section</div>
+                <pre class="bg-gray-800 p-3 rounded text-green-400">@Model.Header</pre>
+            </div>
+            
+            <div class="mb-4">
+                <div class="text-xs uppercase tracking-wider text-gray-500 mb-1 border-b border-gray-700 pb-1">Body Section</div>
+                <pre class="bg-gray-800 p-3 rounded text-white">@Model.Body</pre>
+            </div>
+            
+            <div>
+                <div class="text-xs uppercase tracking-wider text-gray-500 mb-1 border-b border-gray-700 pb-1">Footer Section</div>
+                <pre class="bg-gray-800 p-3 rounded text-blue-300">@Model.Footer</pre>
+            </div>
+        </div>
+    </div>
+</div>
