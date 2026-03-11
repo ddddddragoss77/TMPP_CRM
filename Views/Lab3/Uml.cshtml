@@ -1,0 +1,282 @@
+@{
+    ViewData["Title"] = "Diagrame UML – Lab 3";
+}
+
+<div class="mb-6">
+    <a asp-controller="Lab3" asp-action="Index" class="text-indigo-500 hover:underline text-sm">← Laborator 3</a>
+    <h1 class="text-3xl font-bold text-gray-800 mt-2">📐 Diagrame UML</h1>
+    <p class="text-gray-500 mt-1">Diagrame de clase pentru Builder, Prototype și Singleton</p>
+</div>
+
+<!-- Tabs -->
+<div class="flex gap-2 mb-8 border-b border-gray-200" id="uml-tabs">
+    <button onclick="showTab('builder')" id="tab-builder"
+        class="tab-btn px-5 py-2.5 text-sm font-semibold rounded-t-lg border-b-2 border-blue-600 text-blue-600 -mb-px">
+        🔨 Builder
+    </button>
+    <button onclick="showTab('prototype')" id="tab-prototype"
+        class="tab-btn px-5 py-2.5 text-sm font-semibold rounded-t-lg border-b-2 border-transparent text-gray-500 hover:text-gray-700 -mb-px">
+        🧬 Prototype
+    </button>
+    <button onclick="showTab('singleton')" id="tab-singleton"
+        class="tab-btn px-5 py-2.5 text-sm font-semibold rounded-t-lg border-b-2 border-transparent text-gray-500 hover:text-gray-700 -mb-px">
+        🔒 Singleton
+    </button>
+    <button onclick="showTab('general')" id="tab-general"
+        class="tab-btn px-5 py-2.5 text-sm font-semibold rounded-t-lg border-b-2 border-transparent text-gray-500 hover:text-gray-700 -mb-px">
+        🗺️ Generală
+    </button>
+</div>
+
+<!-- Tab: Builder -->
+<div id="tab-content-builder" class="tab-content">
+    <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-5 text-sm text-blue-800">
+        <strong>Builder Pattern</strong> – Director gestionează pașii, Builder concret construiește Offer-ul.
+        Interfața <code>IOfferBuilder</code> permite schimbarea implementării fără a modifica Director-ul.
+    </div>
+    <div class="bg-white rounded-2xl shadow border border-gray-100 p-6">
+        <div class="mermaid text-center">
+classDiagram
+    direction LR
+
+    class IOfferBuilder {
+        &lt;&lt;interface&gt;&gt;
+        +SetTitle(title) IOfferBuilder
+        +SetClient(clientName) IOfferBuilder
+        +AddProduct(product) IOfferBuilder
+        +SetDiscount(discountPercent) IOfferBuilder
+        +SetValidity(days) IOfferBuilder
+        +SetNotes(notes) IOfferBuilder
+        +Build() Offer
+        +Reset() void
+    }
+
+    class OfferBuilder {
+        -_offer: Offer
+        +SetTitle(title) IOfferBuilder
+        +SetClient(clientName) IOfferBuilder
+        +AddProduct(product) IOfferBuilder
+        +SetDiscount(discountPercent) IOfferBuilder
+        +SetValidity(days) IOfferBuilder
+        +SetNotes(notes) IOfferBuilder
+        +Build() Offer
+        +Reset() void
+    }
+
+    class OfferDirector {
+        -_builder: IOfferBuilder
+        +OfferDirector(builder)
+        +BuildStandardOffer(client) Offer
+        +BuildPremiumOffer(client) Offer
+        +BuildCustomOffer(title, client, products, discount, days) Offer
+    }
+
+    class Offer {
+        +Id: Guid
+        +Title: string
+        +ClientName: string
+        +Products: List~string~
+        +Discount: decimal
+        +ValidityDays: int
+        +CreatedAt: DateTime
+        +Notes: string
+        +ToString() string
+    }
+
+    IOfferBuilder <|.. OfferBuilder : implements
+    OfferDirector o--> IOfferBuilder : uses
+    OfferBuilder ..> Offer : creates
+        </div>
+    </div>
+    <div class="mt-4 grid grid-cols-3 gap-4 text-center text-sm">
+        <div class="bg-blue-50 rounded-lg p-3 border border-blue-100">
+            <div class="font-bold text-blue-700">IOfferBuilder</div>
+            <div class="text-xs text-gray-500 mt-1">Interfața cu metode fluent</div>
+        </div>
+        <div class="bg-blue-50 rounded-lg p-3 border border-blue-100">
+            <div class="font-bold text-blue-700">OfferBuilder</div>
+            <div class="text-xs text-gray-500 mt-1">Construcție efectivă + auto-reset</div>
+        </div>
+        <div class="bg-blue-50 rounded-lg p-3 border border-blue-100">
+            <div class="font-bold text-blue-700">OfferDirector</div>
+            <div class="text-xs text-gray-500 mt-1">Coordonează pașii (Standard/Premium)</div>
+        </div>
+    </div>
+</div>
+
+<!-- Tab: Prototype -->
+<div id="tab-content-prototype" class="tab-content hidden">
+    <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-4 mb-5 text-sm text-emerald-800">
+        <strong>Prototype Pattern</strong> – <code>ReportTemplate</code> implementează <code>IPrototype&lt;T&gt;</code>.
+        <code>ShallowCopy()</code> folosește <code>MemberwiseClone()</code>, iar <code>DeepCopy()</code> clonează și secțiunile individual.
+    </div>
+    <div class="bg-white rounded-2xl shadow border border-gray-100 p-6">
+        <div class="mermaid text-center">
+classDiagram
+    direction TB
+
+    class IPrototype {
+        &lt;&lt;interface&gt;&gt;
+        +ShallowCopy() T
+        +DeepCopy() T
+    }
+
+    class ReportTemplate {
+        +Id: Guid
+        +Title: string
+        +Author: string
+        +CreatedAt: DateTime
+        +FormattingSettings: Dictionary
+        +Sections: List~ReportSection~
+        +ShallowCopy() ReportTemplate
+        +DeepCopy() ReportTemplate
+        +ToString() string
+    }
+
+    class ReportSection {
+        +Title: string
+        +Content: string
+        +ReportSection(title, content)
+        +Clone() ReportSection
+        +ToString() string
+    }
+
+    IPrototype <|.. ReportTemplate : implements
+    ReportTemplate "1" *--> "0..*" ReportSection : contains
+        </div>
+    </div>
+    <div class="mt-4 grid grid-cols-2 gap-4 text-sm">
+        <div class="bg-emerald-50 rounded-lg p-4 border border-emerald-100">
+            <div class="font-bold text-emerald-700 mb-2">ShallowCopy()</div>
+            <code class="text-xs">MemberwiseClone()</code>
+            <p class="text-xs text-gray-500 mt-1">Copiază valorile primitive dar partajează referințele la <code>Sections</code> și <code>FormattingSettings</code></p>
+        </div>
+        <div class="bg-emerald-50 rounded-lg p-4 border border-emerald-100">
+            <div class="font-bold text-emerald-700 mb-2">DeepCopy()</div>
+            <code class="text-xs">new ReportTemplate { ... }</code>
+            <p class="text-xs text-gray-500 mt-1">Creează obiecte noi pentru fiecare <code>ReportSection</code> și <code>Dictionary</code> – complet independent</p>
+        </div>
+    </div>
+</div>
+
+<!-- Tab: Singleton -->
+<div id="tab-content-singleton" class="tab-content hidden">
+    <div class="bg-violet-50 border border-violet-200 rounded-xl p-4 mb-5 text-sm text-violet-800">
+        <strong>Singleton Pattern</strong> – <code>DatabaseConnectionManager</code> este <code>sealed</code>,
+        are constructor privat și expune instanța unică prin <code>Instance</code> (Lazy thread-safe).
+    </div>
+    <div class="bg-white rounded-2xl shadow border border-gray-100 p-6">
+        <div class="mermaid text-center">
+classDiagram
+    direction TB
+
+    class DatabaseConnectionManager {
+        -$_instance: Lazy~T~
+        -$_instanceCount: int
+        -_activeTransactions: int
+        +ConnectionString: string
+        +IsConnected: bool
+        +ConnectedAt: DateTime
+        -DatabaseConnectionManager()
+        +$Instance: DatabaseConnectionManager
+        +Connect(connectionString?) void
+        +Disconnect() void
+        +GetStatus() string
+        +BeginTransaction() void
+        +CommitTransaction() void
+    }
+
+    class ClientCode["Modul CRM"] {
+        +UseDatabase() void
+    }
+
+    DatabaseConnectionManager --> DatabaseConnectionManager : "Lazy creeaza o singura data"
+    ClientCode --> DatabaseConnectionManager : "Instance (global)"
+        </div>
+    </div>
+    <div class="mt-4 grid grid-cols-3 gap-4 text-center text-sm">
+        <div class="bg-violet-50 rounded-lg p-3 border border-violet-100">
+            <div class="font-bold text-violet-700">sealed</div>
+            <div class="text-xs text-gray-500 mt-1">Nu poate fi moștenită</div>
+        </div>
+        <div class="bg-violet-50 rounded-lg p-3 border border-violet-100">
+            <div class="font-bold text-violet-700">private ctor</div>
+            <div class="text-xs text-gray-500 mt-1">Previne <code>new</code> din exterior</div>
+        </div>
+        <div class="bg-violet-50 rounded-lg p-3 border border-violet-100">
+            <div class="font-bold text-violet-700">Lazy&lt;T&gt;</div>
+            <div class="text-xs text-gray-500 mt-1">Thread-safe by default</div>
+        </div>
+    </div>
+</div>
+
+<!-- Tab: General -->
+<div id="tab-content-general" class="tab-content hidden">
+    <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-4 mb-5 text-sm text-indigo-800">
+        <strong>Vedere de ansamblu</strong> – Relațiile globale dintre cele 3 paternuri implementate în TMPP_CRM,
+        organizate pe namespace-uri.
+    </div>
+    <div class="bg-white rounded-2xl shadow border border-gray-100 p-6">
+        <div class="mermaid text-center">
+classDiagram
+    direction LR
+
+    namespace Builder {
+        class OfferDirector
+        class OfferBuilder
+        class Offer
+    }
+
+    namespace Prototype {
+        class ReportTemplate
+        class ReportSection
+    }
+
+    namespace Singleton {
+        class DatabaseConnectionManager
+    }
+
+    OfferDirector --> OfferBuilder : "dirijează"
+    OfferBuilder ..> Offer : "produce"
+    ReportTemplate *--> ReportSection : "conține"
+    ReportTemplate ..> ReportTemplate : "se clonează"
+    DatabaseConnectionManager --> DatabaseConnectionManager : "instanță unică"
+        </div>
+    </div>
+</div>
+
+<!-- Mermaid.js -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+    mermaid.initialize({
+        startOnLoad: true,
+        theme: 'base',
+        themeVariables: {
+            primaryColor: '#e0e7ff',
+            primaryTextColor: '#1e1b4b',
+            primaryBorderColor: '#4f46e5',
+            lineColor: '#6366f1',
+            secondaryColor: '#f0fdf4',
+            tertiaryColor: '#faf5ff'
+        }
+    });
+
+    function showTab(name) {
+        // Ascunde toate contenturile
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+        // Reseteaza toate butoanele
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('border-blue-600', 'text-blue-600');
+            btn.classList.add('border-transparent', 'text-gray-500');
+        });
+        // Afiseaza content-ul selectat
+        document.getElementById('tab-content-' + name).classList.remove('hidden');
+        // Activeaza butonul selectat
+        const activeBtn = document.getElementById('tab-' + name);
+        activeBtn.classList.add('border-blue-600', 'text-blue-600');
+        activeBtn.classList.remove('border-transparent', 'text-gray-500');
+
+        // Re-render Mermaid in tab-ul nou afisat
+        mermaid.run({ nodes: document.getElementById('tab-content-' + name).querySelectorAll('.mermaid') });
+    }
+</script>

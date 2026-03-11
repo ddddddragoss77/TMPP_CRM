@@ -167,3 +167,168 @@ Proiect: `TMPP_CRM.Tests` (xUnit, .NET 8)
 ```bash
 dotnet test "d:\Visual Studio Proiecte\TMPPP\TMPP_CRM.Tests\TMPP_CRM.Tests.csproj"
 ```
+
+---
+
+## Diagrame UML
+
+### 1. Builder Pattern – Diagramă de Clase
+
+```mermaid
+classDiagram
+    direction LR
+
+    class IOfferBuilder {
+        <<interface>>
+        +SetTitle(title: string) IOfferBuilder
+        +SetClient(clientName: string) IOfferBuilder
+        +AddProduct(product: string) IOfferBuilder
+        +SetDiscount(discountPercent: decimal) IOfferBuilder
+        +SetValidity(days: int) IOfferBuilder
+        +SetNotes(notes: string) IOfferBuilder
+        +Build() Offer
+        +Reset() void
+    }
+
+    class OfferBuilder {
+        -_offer: Offer
+        +SetTitle(title: string) IOfferBuilder
+        +SetClient(clientName: string) IOfferBuilder
+        +AddProduct(product: string) IOfferBuilder
+        +SetDiscount(discountPercent: decimal) IOfferBuilder
+        +SetValidity(days: int) IOfferBuilder
+        +SetNotes(notes: string) IOfferBuilder
+        +Build() Offer
+        +Reset() void
+    }
+
+    class OfferDirector {
+        -_builder: IOfferBuilder
+        +OfferDirector(builder: IOfferBuilder)
+        +BuildStandardOffer(clientName: string) Offer
+        +BuildPremiumOffer(clientName: string) Offer
+        +BuildCustomOffer(title, client, products[], discount, days) Offer
+    }
+
+    class Offer {
+        +Id: Guid
+        +Title: string
+        +ClientName: string
+        +Products: List~string~
+        +Discount: decimal
+        +ValidityDays: int
+        +CreatedAt: DateTime
+        +Notes: string
+        +ToString() string
+    }
+
+    IOfferBuilder <|.. OfferBuilder : implements
+    OfferDirector o--> IOfferBuilder : uses
+    OfferBuilder ..> Offer : creates
+```
+
+---
+
+### 2. Prototype Pattern – Diagramă de Clase
+
+```mermaid
+classDiagram
+    direction TB
+
+    class IPrototype~T~ {
+        <<interface>>
+        +ShallowCopy() T
+        +DeepCopy() T
+    }
+
+    class ReportTemplate {
+        +Id: Guid
+        +Title: string
+        +Author: string
+        +CreatedAt: DateTime
+        +FormattingSettings: Dictionary~string,string~
+        +Sections: List~ReportSection~
+        +ShallowCopy() ReportTemplate
+        +DeepCopy() ReportTemplate
+        +ToString() string
+    }
+
+    class ReportSection {
+        +Title: string
+        +Content: string
+        +ReportSection(title, content)
+        +Clone() ReportSection
+        +ToString() string
+    }
+
+    IPrototype~T~ <|.. ReportTemplate : implements
+    ReportTemplate "1" *--> "0..*" ReportSection : contains
+
+    note for ReportTemplate "ShallowCopy(): MemberwiseClone()\nDeepCopy(): new object + Clone() pe sectiuni"
+    note for ReportSection "Clone() = new ReportSection\ncu aceleasi valori (deep)"
+```
+
+---
+
+### 3. Singleton Pattern – Diagramă de Clase
+
+```mermaid
+classDiagram
+    direction TB
+
+    class DatabaseConnectionManager {
+        -$_instance: Lazy~DatabaseConnectionManager~
+        -$_instanceCount: int
+        +ConnectionString: string
+        +IsConnected: bool
+        +ConnectedAt: DateTime
+        -_activeTransactions: int
+        -DatabaseConnectionManager()
+        +$Instance: DatabaseConnectionManager
+        +Connect(connectionString?: string) void
+        +Disconnect() void
+        +GetStatus() string
+        +BeginTransaction() void
+        +CommitTransaction() void
+    }
+
+    class Client["Client Code\n(orice modul CRM)"] {
+        +UseDatabase() void
+    }
+
+    DatabaseConnectionManager --> DatabaseConnectionManager : "_instance (Lazy) creează\no singură dată"
+    Client --> DatabaseConnectionManager : "Instance (acces global)"
+
+    note for DatabaseConnectionManager "sealed class\nconstructor private\nLazy~T~ thread-safe\n(LazyThreadSafetyMode.ExecutionAndPublication)"
+```
+
+---
+
+### Diagrama Generală – Relații între Paternuri
+
+```mermaid
+classDiagram
+    direction LR
+
+    namespace Builder {
+        class OfferDirector
+        class OfferBuilder
+        class Offer
+    }
+
+    namespace Prototype {
+        class ReportTemplate
+        class ReportSection
+    }
+
+    namespace Singleton {
+        class DatabaseConnectionManager
+    }
+
+    OfferDirector --> OfferBuilder : "dirijează construirea"
+    OfferBuilder ..> Offer : "produce"
+    ReportTemplate *--> ReportSection : "conține"
+    ReportTemplate ..> ReportTemplate : "se clonează pe sine"
+    DatabaseConnectionManager --> DatabaseConnectionManager : "instanță unică"
+```
+
