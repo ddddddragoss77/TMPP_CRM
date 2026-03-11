@@ -14,12 +14,6 @@ namespace TMPP_CRM.Controllers
             return View();
         }
 
-        // ─── UML ─────────────────────────────────────────────────────────────────
-        public IActionResult Uml()
-        {
-            return View();
-        }
-
         // ─── Builder ─────────────────────────────────────────────────────────────
         public IActionResult Builder(string type = "standard", string client = "Client Demo")
         {
