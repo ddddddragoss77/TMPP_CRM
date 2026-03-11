@@ -31,12 +31,11 @@ Pași de realizare:
 - ISP (Interface Segregation Principle): Se vor defini interfețe specifice pentru a evita impunerea unor metode inutile 
 asupra claselor. 
 - DIP (Dependency Inversion Principle): Se va utiliza injecția de dependențe pentru a evita legături strânse între module. 
-
 Laborator 2 – Paternurile de proiectare creționale: Factory Method și Abstract Factory 
 În acest laborator, studenții vor explora și implementa două paternuri de proiectare creționale esențiale: Factory Method și 
-Abstract Factory. Aceste paternuri sunt u lizate pentru a ges ona crearea obiectelor într-un mod flexibil, reducând dependențele 
+Abstract Factory. Aceste paternuri sunt utilizate pentru a gestiona crearea obiectelor într-un mod flexibil, reducând dependențele 
 dintre module și îmbunătățind scalabilitatea aplicației. Fiecare student va implementa o soluție aplicabilă domeniului ales, utilizând 
-aceste paternuri pentru a îmbunătăți modularitatea și reu lizarea codului. 
+aceste paternuri pentru a îmbunătăți modularitatea și reutilizarea codului. 
 Pași de realizare: 
 1. Factory Method: - 
 Crearea unei structuri în care obiectele sunt instanțiate prin intermediul unei metode de fabrică, fără a specifica direct 
