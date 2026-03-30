@@ -1,0 +1,83 @@
+@{
+    ViewData["Title"] = "Laborator 4 – Paternuri Structurale";
+}
+
+<div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-800 mb-2">Laborator 4</h1>
+    <p class="text-gray-500 text-lg">Paternuri de Proiectare Structurale: Adapter, Composite și Façade</p>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+    <!-- Adapter -->
+    <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-100">
+        <div class="bg-gradient-to-br from-sky-500 to-sky-700 p-6 text-white">
+            <div class="text-4xl mb-3">🔌</div>
+            <h2 class="text-xl font-bold">Adapter Pattern</h2>
+            <p class="text-sky-100 text-sm mt-1">Compatibilitate între interfețe</p>
+        </div>
+        <div class="p-6">
+            <p class="text-gray-600 text-sm mb-4">
+                Integrare uniformă a gateway-urilor de plată <strong>PayPal</strong>, <strong>Stripe</strong>
+                și <strong>Google Pay</strong> prin interfața comună <code>IPaymentGateway</code>.
+            </p>
+            <ul class="text-xs text-gray-500 space-y-1 mb-5">
+                <li>✅ <code>IPaymentGateway</code> – interfață comună</li>
+                <li>✅ 3 Adaptori (PayPal, Stripe, Google Pay)</li>
+                <li>✅ Cod client interschimbabil</li>
+            </ul>
+            <a asp-controller="Lab4" asp-action="Adapter"
+               class="block text-center bg-sky-600 hover:bg-sky-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">
+                Vezi Demo →
+            </a>
+        </div>
+    </div>
+
+    <!-- Composite -->
+    <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-100">
+        <div class="bg-gradient-to-br from-orange-500 to-orange-700 p-6 text-white">
+            <div class="text-4xl mb-3">🌳</div>
+            <h2 class="text-xl font-bold">Composite Pattern</h2>
+            <p class="text-orange-100 text-sm mt-1">Ierarhii tratate uniform</p>
+        </div>
+        <div class="p-6">
+            <p class="text-gray-600 text-sm mb-4">
+                Meniu de restaurant cu <strong>produse individuale</strong> și <strong>submeniuri</strong>
+                tratate uniform. Prețul se calculează recursiv prin toată ierarhia.
+            </p>
+            <ul class="text-xs text-gray-500 space-y-1 mb-5">
+                <li>✅ <code>IMenuComponent</code> – interfață comună</li>
+                <li>✅ <code>MenuItem</code> – frunză (produs)</li>
+                <li>✅ <code>MenuGroup</code> – compus (recursiv)</li>
+            </ul>
+            <a asp-controller="Lab4" asp-action="Composite"
+               class="block text-center bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">
+                Vezi Demo →
+            </a>
+        </div>
+    </div>
+
+    <!-- Facade -->
+    <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-100">
+        <div class="bg-gradient-to-br from-rose-500 to-rose-700 p-6 text-white">
+            <div class="text-4xl mb-3">🏨</div>
+            <h2 class="text-xl font-bold">Façade Pattern</h2>
+            <p class="text-rose-100 text-sm mt-1">Interfață simplificată</p>
+        </div>
+        <div class="p-6">
+            <p class="text-gray-600 text-sm mb-4">
+                Rezervare hotel prin o singură metodă <code>BookRoom()</code> care orchestrează intern
+                4 subsisteme: căutare, disponibilitate, plată și notificări.
+            </p>
+            <ul class="text-xs text-gray-500 space-y-1 mb-5">
+                <li>✅ <code>HotelBookingFacade</code> – interfață simplă</li>
+                <li>✅ 4 subsisteme interne ascunse</li>
+                <li>✅ Demonstrație interactivă</li>
+            </ul>
+            <a asp-controller="Lab4" asp-action="Facade"
+               class="block text-center bg-rose-600 hover:bg-rose-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">
+                Vezi Demo →
+            </a>
+        </div>
+    </div>
+</div>

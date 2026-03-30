@@ -50,3 +50,37 @@ Prezentarea rezultatului:
 Codul sursă, commit-urile pe GitHub, cum rulează codul, raportul în care să fie scurt descrisă implementarea realizată, diagramele 
 UML pentru paternurile realizate din codul sursă. Fiecare patern trebuie descris: definiția, ce problemă rezolvă și 
 avantaje/dezavantaje 
+Laborator 3 - Paternurile de proiectare creționale: Builder, Prototype și Singleton
+Condiție:
+În acest laborator, studenții vor explora și implementa trei paternuri de proiectare creționale esențiale: Builder, Prototype și Singleton. Aceste paternuri sunt utilizate pentru a gestiona crearea obiectelor complexe, pentru a permite clonarea obiectelor existente și pentru a asigura existența unei singure instanțe a unei clase. Prin aplicarea acestor paternuri, studenții vor învăța să creeze obiecte într-un mod modular și eficient.
+
+ 
+Pași de realizare:
+1. Builder:
+• Se va utiliza un constructor pas cu pas pentru a crea obiecte complexe, separând logica de construire de reprezentarea finală.
+• Se va defini o clasă director, care gestionează procesul de construire, și una sau mai multe clase builder, care implementează pașii necesari pentru a construi obiectele.
+• Se va permite personalizarea obiectelor prin metode fluente sau configurabile.
+Exemplu: Un sistem de comenzi online care permite utilizatorului să creeze un produs personalizat (burger, laptop, vacanță etc.), alegând diferite opțiuni (ingrediente, specificații, accesorii).
+
+ 
+2. Prototype:
+• Se va implementa clonarea obiectelor folosind Prototype Pattern, permițând crearea de noi instanțe pe baza unui prototip existent.
+• Se va defini o interfață pentru clonare, iar clasele concrete vor implementa metoda pentru a returna copii ale obiectului curent.
+• Se vor gestiona copii superficiale (shallow copy) și copii profunde (deep copy) în funcție de necesitățile aplicației.
+Exemplu: Un sistem de gestionare a documentelor care permite duplicarea unui document cu toate setările și conținutul inițial, permițând astfel crearea rapidă a unor variante similare.
+
+ 
+3. Singleton:
+• Se va implementa un mecanism care asigură că o clasă are o singură instanță accesibilă global.
+• Se va folosi o metodă statică pentru a returna instanța unică și se va preveni crearea de noi instanțe.
+• Se va gestiona sincronizarea în cazul în care aplicația rulează în medii multi-threaded.
+Exemplu: Un sistem de gestionare a conexiunilor la baza de date, unde trebuie să existe o singură conexiune activă care să fie reutilizată de toate modulele aplicației.
+
+ 
+Testare și Refactorizare:
+• Implementarea testelor unitare pentru fiecare patern utilizat.
+• Refactorizarea codului pentru a îmbunătăți claritatea, reducerea dependențelor inutile și îmbunătățirea reutilizării.
+
+ 
+Prezentarea rezultatului:
+• Explicarea fiecărui patern implementat, beneficiile acestuia și modul în care a fost aplicat în proiect.
