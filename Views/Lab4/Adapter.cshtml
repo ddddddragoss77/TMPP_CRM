@@ -1,0 +1,91 @@
+@model TMPP_CRM.Controllers.AdapterViewModel
+@{
+    ViewData["Title"] = "Adapter Pattern – Gateway Plăți";
+}
+
+<div class="mb-6">
+    <a asp-controller="Lab4" asp-action="Index" class="text-sky-500 hover:underline text-sm">← Laborator 4</a>
+    <h1 class="text-3xl font-bold text-gray-800 mt-2">🔌 Adapter Pattern</h1>
+    <p class="text-gray-500 mt-1">Integrare uniformă a gateway-urilor de plată cu API-uri diferite</p>
+</div>
+
+<div class="bg-sky-50 border border-sky-200 rounded-xl p-5 mb-6 text-sm text-sky-800">
+    <strong>Cum funcționează?</strong> Fiecare provider (PayPal, Stripe, Google Pay) are propriul API incompatibil.
+    <strong>Adaptorul</strong> wrappează fiecare serviciu legacy și îl expune prin interfața comună
+    <code>IPaymentGateway</code>, permițând codului client să le folosească identic.
+</div>
+
+<!-- Selector provider -->
+<div class="flex gap-3 mb-8 flex-wrap">
+    @foreach (var p in new[] { ("paypal", "💳 PayPal", "bg-blue-600"), ("stripe", "⚡ Stripe", "bg-purple-600"), ("googlepay", "🔵 Google Pay", "bg-gray-700") })
+    {
+        var isActive = Model.SelectedProvider.ToLower() == p.Item1;
+        <a asp-controller="Lab4" asp-action="Adapter" asp-route-provider="@p.Item1" asp-route-amount="@Model.Amount"
+           class="px-5 py-2 rounded-lg text-white font-semibold transition duration-200 @(isActive ? p.Item3 + " ring-2 ring-offset-2" : "bg-gray-300 text-gray-700 hover:bg-gray-400")">
+            @p.Item2
+        </a>
+    }
+</div>
+
+<!-- Rezultat plata -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="bg-white rounded-2xl shadow border border-gray-100 overflow-hidden">
+        <div class="@(Model.Result.IsSuccess ? "bg-green-600" : "bg-red-600") text-white p-5">
+            <p class="text-xs uppercase tracking-widest opacity-75">Rezultat Plată</p>
+            <h2 class="text-2xl font-bold mt-1">@(Model.Result.IsSuccess ? "✅ SUCCES" : "❌ EȘUATĂ")</h2>
+            <p class="text-white/80 text-sm mt-1">Provider: <strong>@Model.Result.Provider</strong></p>
+        </div>
+        <div class="p-5 space-y-3">
+            <div class="flex justify-between py-2 border-b border-gray-100">
+                <span class="text-sm text-gray-500">Transaction ID</span>
+                <code class="text-xs bg-gray-100 px-2 py-1 rounded text-gray-700">@Model.Result.TransactionId</code>
+            </div>
+            <div class="flex justify-between py-2 border-b border-gray-100">
+                <span class="text-sm text-gray-500">Suma</span>
+                <span class="font-bold text-gray-800">@Model.Result.Amount.ToString("F2") @Model.Result.Currency</span>
+            </div>
+            <div class="flex justify-between py-2 border-b border-gray-100">
+                <span class="text-sm text-gray-500">Validat</span>
+                <span class="font-semibold @(Model.IsValid ? "text-green-600" : "text-red-500")">
+                    @(Model.IsValid ? "✅ Da" : "❌ Nu")
+                </span>
+            </div>
+            <div class="flex justify-between py-2">
+                <span class="text-sm text-gray-500">Procesat la</span>
+                <span class="text-sm text-gray-700">@Model.Result.ProcessedAt.ToString("HH:mm:ss")</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Diagrama adapter -->
+    <div class="bg-white rounded-2xl shadow border border-gray-100 p-5">
+        <h3 class="font-bold text-gray-700 mb-4 text-sm">Cum funcționează Adapter-ul</h3>
+        <div class="space-y-3 text-sm">
+            <div class="bg-sky-50 border border-sky-200 rounded-lg p-3 text-center font-mono text-xs">
+                <span class="text-sky-700 font-bold">Client</span>
+                <div class="text-gray-400 my-1">↓ apelează <code>ProcessPayment()</code></div>
+                <span class="text-indigo-600 font-bold">IPaymentGateway</span>
+            </div>
+            <div class="text-center text-gray-400 text-xs">↓ traduce apelul</div>
+            @if (Model.SelectedProvider == "paypal") {
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 text-center font-mono text-xs">
+                    <span class="text-blue-700 font-bold">PayPalAdapter</span>
+                    <div class="text-gray-400 my-1">↓ <code>double amount</code></div>
+                    <span class="text-blue-500">PayPalService.MakePayment()</span>
+                </div>
+            } else if (Model.SelectedProvider == "stripe") {
+                <div class="bg-purple-50 border border-purple-200 rounded-lg p-3 text-center font-mono text-xs">
+                    <span class="text-purple-700 font-bold">StripeAdapter</span>
+                    <div class="text-gray-400 my-1">↓ <code>amount × 100 centi</code></div>
+                    <span class="text-purple-500">StripeService.ChargeCard()</span>
+                </div>
+            } else {
+                <div class="bg-gray-100 border border-gray-300 rounded-lg p-3 text-center font-mono text-xs">
+                    <span class="text-gray-700 font-bold">GooglePayAdapter</span>
+                    <div class="text-gray-400 my-1">↓ <code>GooglePayRequest{...}</code></div>
+                    <span class="text-gray-600">GooglePayService.SendPayment()</span>
+                </div>
+            }
+        </div>
+    </div>
+</div>

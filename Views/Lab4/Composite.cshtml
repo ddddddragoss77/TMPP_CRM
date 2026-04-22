@@ -1,0 +1,105 @@
+@model TMPP_CRM.Domain.Composite.MenuGroup
+@using TMPP_CRM.Domain.Composite
+@{
+    ViewData["Title"] = "Composite Pattern – Meniu Restaurant";
+}
+
+<div class="mb-6">
+    <a asp-controller="Lab4" asp-action="Index" class="text-orange-500 hover:underline text-sm">← Laborator 4</a>
+    <h1 class="text-3xl font-bold text-gray-800 mt-2">🌳 Composite Pattern</h1>
+    <p class="text-gray-500 mt-1">Ierarhie de meniu – frunze și grupuri tratate uniform</p>
+</div>
+
+<div class="bg-orange-50 border border-orange-200 rounded-xl p-5 mb-6 text-sm text-orange-800">
+    <strong>Cum funcționează?</strong> Atât <code>MenuItem</code> (produs individual) cât și <code>MenuGroup</code>
+    (submeniu) implementează <code>IMenuComponent</code>. <code>GetPrice()</code> funcționează identic pe ambele —
+    suma se calculează <strong>recursiv</strong> prin toată ierarhia.
+</div>
+
+<!-- Header total -->
+<div class="bg-gradient-to-r from-orange-600 to-orange-800 rounded-2xl p-5 text-white mb-6 flex justify-between items-center">
+    <div>
+        <p class="text-orange-200 text-xs uppercase tracking-widest">Meniu Complet</p>
+        <h2 class="text-2xl font-bold">@Model.GetName()</h2>
+        <p class="text-orange-100 text-sm mt-1">@Model.GetDescription()</p>
+    </div>
+    <div class="text-right">
+        <p class="text-orange-200 text-sm">Total meniu</p>
+        <p class="text-3xl font-bold">@Model.GetPrice().ToString("F2") RON</p>
+    </div>
+</div>
+
+<!-- Ierarhia vizuala -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    @foreach (var group in Model.GetChildren())
+    {
+        var menuGroup = group as MenuGroup;
+        if (menuGroup == null) continue;
+
+        <div class="bg-white rounded-2xl shadow border border-gray-100 overflow-hidden">
+            <div class="bg-orange-100 border-b border-orange-200 px-5 py-4 flex justify-between items-center">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-orange-600">📋</span>
+                        <h3 class="font-bold text-gray-800">@menuGroup.GetName()</h3>
+                        <span class="text-xs bg-orange-200 text-orange-700 px-2 py-0.5 rounded-full">Compus</span>
+                    </div>
+                    @if (!string.IsNullOrEmpty(menuGroup.GetDescription()))
+                    {
+                        <p class="text-xs text-gray-500 mt-1 ml-6">@menuGroup.GetDescription()</p>
+                    }
+                </div>
+                <div class="text-right">
+                    <p class="text-xs text-gray-400">Total grup</p>
+                    <p class="font-bold text-orange-700">@menuGroup.GetPrice().ToString("F2") RON</p>
+                </div>
+            </div>
+            <div class="divide-y divide-gray-50">
+                @foreach (var child in menuGroup.GetChildren())
+                {
+                    if (child is MenuGroup subGroup)
+                    {
+                        <!-- Subgroup -->
+                        <div class="px-4 py-2 bg-orange-50">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-xs font-semibold text-orange-600 uppercase">📦 @subGroup.GetName()</span>
+                                <span class="text-xs text-orange-600 font-bold">@subGroup.GetPrice().ToString("F2") RON</span>
+                            </div>
+                            @foreach (var leaf in subGroup.GetChildren())
+                            {
+                                <div class="flex justify-between items-center py-1 pl-3">
+                                    <div>
+                                        <span class="text-sm text-gray-700">🍽 @leaf.GetName()</span>
+                                        @if (!string.IsNullOrEmpty(leaf.GetDescription()))
+                                        {
+                                            <span class="text-xs text-gray-400 ml-1">(@leaf.GetDescription())</span>
+                                        }
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-800 ml-4 shrink-0">@leaf.GetPrice().ToString("F2") RON</span>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <!-- Leaf item -->
+                        <div class="flex justify-between items-center px-5 py-3 hover:bg-gray-50">
+                            <div>
+                                <span class="text-sm text-gray-700">🍽 @child.GetName()</span>
+                                @if (!string.IsNullOrEmpty(child.GetDescription()))
+                                {
+                                    <p class="text-xs text-gray-400 mt-0.5">@child.GetDescription()</p>
+                                }
+                            </div>
+                            <span class="text-sm font-semibold text-gray-800 ml-4 shrink-0">@child.GetPrice().ToString("F2") RON</span>
+                        </div>
+                    }
+                }
+            </div>
+            <div class="px-5 py-2 bg-gray-50 border-t flex justify-between text-xs text-gray-400">
+                <span>@menuGroup.GetChildren().Count componente</span>
+                <span>IsComposite: <strong class="text-orange-600">true</strong></span>
+            </div>
+        </div>
+    }
+</div>
