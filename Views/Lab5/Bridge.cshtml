@@ -1,0 +1,48 @@
+@model TMPP_CRM.Controllers.BridgeViewModel
+
+@{
+    ViewData["Title"] = "Bridge Pattern Demo";
+}
+
+<div class="mb-6">
+    <a asp-controller="Lab5" asp-action="Index" class="text-amber-600 hover:text-amber-800 font-medium">&larr; Înapoi la Laborator 5</a>
+</div>
+
+<div class="bg-white rounded-2xl shadow-lg p-8 max-w-2xl mx-auto border border-gray-100">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6 flex items-center">
+        <span class="text-4xl mr-3">🌉</span> Bridge Pattern Demo
+    </h1>
+
+    <form method="get" asp-action="Bridge" class="mb-8 grid grid-cols-2 gap-6 bg-gray-50 p-6 rounded-xl border border-gray-200">
+        
+        <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">1. Alege Tipul Media</label>
+            <select name="mediaType" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-amber-500 focus:ring-amber-500">
+                @if (Model.MediaType == "Audio") { <option value="Audio" selected>Fișier Audio</option> } else { <option value="Audio">Fișier Audio</option> }
+                @if (Model.MediaType == "Video") { <option value="Video" selected>Fișier Video</option> } else { <option value="Video">Fișier Video</option> }
+            </select>
+        </div>
+
+        <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">2. Alege Dispozitivul</label>
+            <select name="deviceType" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-amber-500 focus:ring-amber-500">
+                @if (Model.DeviceType == "Phone") { <option value="Phone" selected>Telefon (Phone)</option> } else { <option value="Phone">Telefon (Phone)</option> }
+                @if (Model.DeviceType == "Tv") { <option value="Tv" selected>Televizor (TV 4K)</option> } else { <option value="Tv">Televizor (TV 4K)</option> }
+            </select>
+        </div>
+        
+        <div class="col-span-2">
+            <button type="submit" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 px-6 rounded-lg transition duration-200 shadow-md">
+                Redare (Play)
+            </button>
+        </div>
+    </form>
+
+    <div class="bg-amber-50 border border-amber-200 rounded-xl p-6 text-center">
+        <div class="inline-block p-4 rounded-full bg-amber-100 mb-3">
+            <span class="text-3xl">@(Model.MediaType == "Video" ? "🎬" : "🎵")</span>
+        </div>
+        <h3 class="text-sm font-semibold text-amber-800 mb-2 uppercase tracking-wider">Status Redare:</h3>
+        <p class="text-lg font-medium text-amber-900">@Model.Result</p>
+    </div>
+</div>

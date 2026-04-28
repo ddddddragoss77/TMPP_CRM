@@ -1,0 +1,37 @@
+@model TMPP_CRM.Controllers.FlyweightViewModel
+
+@{
+    ViewData["Title"] = "Flyweight Pattern Demo";
+}
+
+<div class="mb-6">
+    <a asp-controller="Lab5" asp-action="Index" class="text-indigo-600 hover:text-indigo-800 font-medium">&larr; Înapoi la Laborator 5</a>
+</div>
+
+<div class="bg-white rounded-2xl shadow-lg p-8 max-w-2xl mx-auto border border-gray-100">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6 flex items-center">
+        <span class="text-4xl mr-3">🪶</span> Flyweight Pattern Demo
+    </h1>
+
+    <div class="bg-indigo-50 border-l-4 border-indigo-500 p-4 mb-6 rounded-r-lg">
+        <p class="text-indigo-800">
+            Am introdus două texte în editor: "Hello CRM" și "Promo 2026".
+        </p>
+    </div>
+
+    <div class="grid grid-cols-2 gap-6 mb-6">
+        <div class="bg-gray-50 p-6 rounded-xl text-center border border-gray-200">
+            <div class="text-sm text-gray-500 font-semibold mb-1 uppercase tracking-wider">Total Caractere în Text</div>
+            <div class="text-4xl font-bold text-gray-800">@Model.TotalDocumentCharacters</div>
+        </div>
+        
+        <div class="bg-indigo-50 p-6 rounded-xl text-center border border-indigo-200">
+            <div class="text-sm text-indigo-500 font-semibold mb-1 uppercase tracking-wider">Instanțe Create (Memorie)</div>
+            <div class="text-4xl font-bold text-indigo-700">@Model.TotalFactoryInstances</div>
+        </div>
+    </div>
+    
+    <p class="text-sm text-gray-600 text-center">
+        Datorită Flyweight, refolosim instanțele pentru caracterele comune, salvând memorie.
+    </p>
+</div>

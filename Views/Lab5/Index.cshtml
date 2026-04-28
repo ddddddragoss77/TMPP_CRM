@@ -1,0 +1,84 @@
+@{
+    ViewData["Title"] = "Laborator 5 – Paternuri Structurale";
+}
+
+<div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-800 mb-2">Laborator 5</h1>
+    <p class="text-gray-500 text-lg">Paternuri de Proiectare Structurale: Flyweight, Decorator, Bridge și Proxy</p>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+    <!-- Flyweight -->
+    <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-100">
+        <div class="bg-gradient-to-br from-indigo-500 to-indigo-700 p-6 text-white">
+            <div class="text-4xl mb-3">🪶</div>
+            <h2 class="text-xl font-bold">Flyweight Pattern</h2>
+            <p class="text-indigo-100 text-sm mt-1">Optimizarea memoriei</p>
+        </div>
+        <div class="p-6">
+            <p class="text-gray-600 text-sm mb-4">
+                Reducerea consumului de memorie prin partajarea obiectelor identice (caractere dintr-un editor de text).
+            </p>
+            <a asp-controller="Lab5" asp-action="Flyweight"
+               class="block text-center bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">
+                Vezi Demo →
+            </a>
+        </div>
+    </div>
+
+    <!-- Decorator -->
+    <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-100">
+        <div class="bg-gradient-to-br from-emerald-500 to-emerald-700 p-6 text-white">
+            <div class="text-4xl mb-3">🎁</div>
+            <h2 class="text-xl font-bold">Decorator Pattern</h2>
+            <p class="text-emerald-100 text-sm mt-1">Extindere dinamică</p>
+        </div>
+        <div class="p-6">
+            <p class="text-gray-600 text-sm mb-4">
+                Adăugarea de noi funcționalități de notificare (SMS, Push) fără modificarea obiectelor existente.
+            </p>
+            <a asp-controller="Lab5" asp-action="Decorator"
+               class="block text-center bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">
+                Vezi Demo →
+            </a>
+        </div>
+    </div>
+
+    <!-- Bridge -->
+    <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-100">
+        <div class="bg-gradient-to-br from-amber-500 to-amber-700 p-6 text-white">
+            <div class="text-4xl mb-3">🌉</div>
+            <h2 class="text-xl font-bold">Bridge Pattern</h2>
+            <p class="text-amber-100 text-sm mt-1">Decuplarea abstracției</p>
+        </div>
+        <div class="p-6">
+            <p class="text-gray-600 text-sm mb-4">
+                Decuplarea fișierelor media (Audio, Video) de pe dispozitivele de redare (Phone, TV).
+            </p>
+            <a asp-controller="Lab5" asp-action="Bridge"
+               class="block text-center bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">
+                Vezi Demo →
+            </a>
+        </div>
+    </div>
+
+    <!-- Proxy -->
+    <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-100">
+        <div class="bg-gradient-to-br from-purple-500 to-purple-700 p-6 text-white">
+            <div class="text-4xl mb-3">🛡️</div>
+            <h2 class="text-xl font-bold">Proxy Pattern</h2>
+            <p class="text-purple-100 text-sm mt-1">Control acces</p>
+        </div>
+        <div class="p-6">
+            <p class="text-gray-600 text-sm mb-4">
+                Un proxy de protecție controlează accesul la date financiare sau sensibile din sistem pe baza rolului.
+            </p>
+            <a asp-controller="Lab5" asp-action="Proxy"
+               class="block text-center bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">
+                Vezi Demo →
+            </a>
+        </div>
+    </div>
+
+</div>
