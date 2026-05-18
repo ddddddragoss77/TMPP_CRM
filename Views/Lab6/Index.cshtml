@@ -1,0 +1,107 @@
+@{
+    ViewData["Title"] = "Modul Vânzări & Strategii";
+}
+
+<div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-800 mb-2">Modul Vânzări & Strategii</h1>
+    <p class="text-gray-500 text-lg">Unelte avansate pentru managementul ofertelor, lead-urilor și politicilor comerciale.</p>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+    <!-- Strategy -> Algoritmi Reduceri -->
+    <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden border border-gray-100 group">
+        <div class="bg-blue-50 p-6 flex flex-col items-center group-hover:bg-blue-100 transition-colors">
+            <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-blue-600 mb-4 shadow-sm">
+                <i class="ph ph-percent text-3xl"></i>
+            </div>
+            <h2 class="text-xl font-bold text-gray-900 text-center">Motor Reduceri</h2>
+            <p class="text-blue-600 text-sm mt-1 font-medium">Politici Comerciale</p>
+        </div>
+        <div class="p-6 flex flex-col h-full">
+            <p class="text-gray-600 text-sm mb-6 text-center flex-grow">
+                Schimbă dinamic algoritmul de discount aplicat pe oferte direct la rulare, fără a afecta baza de date.
+            </p>
+            <a asp-controller="Lab6" asp-action="Strategy" class="mt-auto block text-center bg-white border border-gray-200 hover:border-blue-500 hover:text-blue-600 text-gray-700 font-semibold py-2.5 px-4 rounded-xl transition duration-200">
+                Testează Discount-uri
+            </a>
+        </div>
+    </div>
+
+    <!-- Observer -> Alerte Live -->
+    <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden border border-gray-100 group">
+        <div class="bg-indigo-50 p-6 flex flex-col items-center group-hover:bg-indigo-100 transition-colors">
+            <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-indigo-600 mb-4 shadow-sm">
+                <i class="ph ph-broadcast text-3xl"></i>
+            </div>
+            <h2 class="text-xl font-bold text-gray-900 text-center">Alerte Live</h2>
+            <p class="text-indigo-600 text-sm mt-1 font-medium">Notificări Stare Deal</p>
+        </div>
+        <div class="p-6 flex flex-col h-full">
+            <p class="text-gray-600 text-sm mb-6 text-center flex-grow">
+                Abonează mai multe module (Email, Log, Raport) să fie notificate automat când stadiul unei vânzări se schimbă.
+            </p>
+            <a asp-controller="Lab6" asp-action="Observer" class="mt-auto block text-center bg-white border border-gray-200 hover:border-indigo-500 hover:text-indigo-600 text-gray-700 font-semibold py-2.5 px-4 rounded-xl transition duration-200">
+                Simulează Tranzacție
+            </a>
+        </div>
+    </div>
+
+    <!-- Command -> Sistem Undo -->
+    <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden border border-gray-100 group">
+        <div class="bg-emerald-50 p-6 flex flex-col items-center group-hover:bg-emerald-100 transition-colors">
+            <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-emerald-600 mb-4 shadow-sm">
+                <i class="ph ph-clock-counter-clockwise text-3xl"></i>
+            </div>
+            <h2 class="text-xl font-bold text-gray-900 text-center">Istoric Acțiuni</h2>
+            <p class="text-emerald-600 text-sm mt-1 font-medium">Undo / Redo</p>
+        </div>
+        <div class="p-6 flex flex-col h-full">
+            <p class="text-gray-600 text-sm mb-6 text-center flex-grow">
+                Încapsulează operațiunile pe o factură sub formă de obiecte executabile, permițând anularea lor rapidă în caz de eroare.
+            </p>
+            <a asp-controller="Lab6" asp-action="Command" class="mt-auto block text-center bg-white border border-gray-200 hover:border-emerald-500 hover:text-emerald-600 text-gray-700 font-semibold py-2.5 px-4 rounded-xl transition duration-200">
+                Vezi Jurnalul
+            </a>
+        </div>
+    </div>
+
+    <!-- Memento -> Salvare Stare -->
+    <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden border border-gray-100 group">
+        <div class="bg-rose-50 p-6 flex flex-col items-center group-hover:bg-rose-100 transition-colors">
+            <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-rose-600 mb-4 shadow-sm">
+                <i class="ph ph-floppy-disk text-3xl"></i>
+            </div>
+            <h2 class="text-xl font-bold text-gray-900 text-center">Backup Formular</h2>
+            <p class="text-rose-600 text-sm mt-1 font-medium">Snapshot Date</p>
+        </div>
+        <div class="p-6 flex flex-col h-full">
+            <p class="text-gray-600 text-sm mb-6 text-center flex-grow">
+                Salvează un "snapshot" al datelor unui Lead înainte de modificare, pentru a le putea restaura instantaneu dacă negocierea pică.
+            </p>
+            <a asp-controller="Lab6" asp-action="Memento" class="mt-auto block text-center bg-white border border-gray-200 hover:border-rose-500 hover:text-rose-600 text-gray-700 font-semibold py-2.5 px-4 rounded-xl transition duration-200">
+                Manager Backup
+            </a>
+        </div>
+    </div>
+
+    <!-- Iterator -> Procesare Loturi -->
+    <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden border border-gray-100 group">
+        <div class="bg-amber-50 p-6 flex flex-col items-center group-hover:bg-amber-100 transition-colors">
+            <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-amber-600 mb-4 shadow-sm">
+                <i class="ph ph-list-numbers text-3xl"></i>
+            </div>
+            <h2 class="text-xl font-bold text-gray-900 text-center">Procesare Loturi</h2>
+            <p class="text-amber-600 text-sm mt-1 font-medium">Parcurgere Secvențială</p>
+        </div>
+        <div class="p-6 flex flex-col h-full">
+            <p class="text-gray-600 text-sm mb-6 text-center flex-grow">
+                Unifică modul de parcurgere a colecțiilor eterogene de oferte și clienți, fără a expune logica internă de stocare a CRM-ului.
+            </p>
+            <a asp-controller="Lab6" asp-action="Iterator" class="mt-auto block text-center bg-white border border-gray-200 hover:border-amber-500 hover:text-amber-600 text-gray-700 font-semibold py-2.5 px-4 rounded-xl transition duration-200">
+                Rulează Iteratorul
+            </a>
+        </div>
+    </div>
+
+</div>

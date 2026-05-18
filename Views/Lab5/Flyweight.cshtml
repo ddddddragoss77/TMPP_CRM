@@ -1,37 +1,64 @@
 @model TMPP_CRM.Controllers.FlyweightViewModel
 
 @{
-    ViewData["Title"] = "Flyweight Pattern Demo";
+    ViewData["Title"] = "CRM Text Rendering Engine";
 }
 
-<div class="mb-6">
-    <a asp-controller="Lab5" asp-action="Index" class="text-indigo-600 hover:text-indigo-800 font-medium">&larr; Înapoi la Laborator 5</a>
+<div class="mb-6 flex items-center justify-between">
+    <div>
+        <h1 class="text-2xl font-bold text-gray-900 flex items-center">
+            <i class="ph ph-cpu text-indigo-600 mr-3 text-3xl"></i>
+            Motor Compresie RAM (Editor Texte)
+        </h1>
+        <p class="text-gray-500 mt-1">Sistemul de optimizare a memoriei pentru procesarea documentelor CRM uriașe.</p>
+    </div>
 </div>
 
-<div class="bg-white rounded-2xl shadow-lg p-8 max-w-2xl mx-auto border border-gray-100">
-    <h1 class="text-3xl font-bold text-gray-800 mb-6 flex items-center">
-        <span class="text-4xl mr-3">🪶</span> Flyweight Pattern Demo
-    </h1>
-
-    <div class="bg-indigo-50 border-l-4 border-indigo-500 p-4 mb-6 rounded-r-lg">
-        <p class="text-indigo-800">
-            Am introdus două texte în editor: "Hello CRM" și "Promo 2026".
-        </p>
+<div class="bg-white border border-gray-100 rounded-xl p-6 mb-8 text-sm text-gray-600 shadow-sm flex items-start gap-4">
+    <i class="ph ph-feather text-indigo-500 text-2xl"></i>
+    <div>
+        <strong class="text-gray-800">Partajare Activă de Memorie:</strong>
+        În loc să instanțieze câte un obiect complet în RAM pentru fiecare literă (ceea ce ar bloca sistemul la zeci de mii de pagini), motorul CRM reciclează obiectele cu aceleași atribute grafice (font, dimensiune) folosind un pool partajat.
     </div>
+</div>
 
-    <div class="grid grid-cols-2 gap-6 mb-6">
-        <div class="bg-gray-50 p-6 rounded-xl text-center border border-gray-200">
-            <div class="text-sm text-gray-500 font-semibold mb-1 uppercase tracking-wider">Total Caractere în Text</div>
-            <div class="text-4xl font-bold text-gray-800">@Model.TotalDocumentCharacters</div>
-        </div>
-        
-        <div class="bg-indigo-50 p-6 rounded-xl text-center border border-indigo-200">
-            <div class="text-sm text-indigo-500 font-semibold mb-1 uppercase tracking-wider">Instanțe Create (Memorie)</div>
-            <div class="text-4xl font-bold text-indigo-700">@Model.TotalFactoryInstances</div>
-        </div>
+<div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden relative">
+    <div class="bg-gray-50 border-b border-gray-200 px-6 py-4 flex justify-between items-center">
+        <h3 class="font-bold text-gray-800 flex items-center"><i class="ph ph-file-text mr-2 text-indigo-500"></i> Buffer Analiză Text</h3>
+        <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full border border-emerald-200 flex items-center">
+            <i class="ph ph-check-circle mr-1"></i> Compresie Activă
+        </span>
     </div>
     
-    <p class="text-sm text-gray-600 text-center">
-        Datorită Flyweight, refolosim instanțele pentru caracterele comune, salvând memorie.
-    </p>
+    <div class="p-8">
+        <div class="bg-indigo-50 border border-indigo-100 p-5 rounded-xl text-indigo-800 mb-8 font-medium text-sm relative">
+            <i class="ph ph-quotes absolute -top-3 -left-2 text-3xl text-indigo-200 bg-white px-1"></i>
+            <span class="text-gray-500">Am încărcat în engine următoarele șiruri pentru procesare:</span><br/>
+            <span class="font-bold text-lg mt-2 inline-block">"Hello CRM"</span> și <span class="font-bold text-lg inline-block">"Promo 2026"</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-gray-900 rounded-2xl p-6 shadow-md relative overflow-hidden group">
+                <div class="absolute right-0 top-0 w-32 h-32 bg-rose-500/10 rounded-bl-full transition-transform group-hover:scale-110"></div>
+                <div class="text-gray-400 font-bold mb-3 uppercase tracking-widest text-xs flex items-center">
+                    <i class="ph ph-text-aa mr-2 text-rose-400"></i> Caractere în Document
+                </div>
+                <div class="text-5xl font-black text-white flex items-end gap-2">
+                    @Model.TotalDocumentCharacters <span class="text-lg font-medium text-gray-500 mb-1">simboluri procesate</span>
+                </div>
+                <p class="text-xs text-gray-500 mt-4 border-t border-gray-800 pt-3">Complexitate O(N) fără optimizare.</p>
+            </div>
+            
+            <div class="bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-2xl p-6 shadow-md shadow-indigo-600/20 relative overflow-hidden group">
+                <div class="absolute right-0 top-0 w-32 h-32 bg-white/10 rounded-bl-full transition-transform group-hover:scale-110"></div>
+                <div class="text-indigo-200 font-bold mb-3 uppercase tracking-widest text-xs flex items-center">
+                    <i class="ph ph-memory mr-2 text-white"></i> Obiecte Create în RAM
+                </div>
+                <div class="text-5xl font-black text-white flex items-end gap-2">
+                    @Model.TotalFactoryInstances <span class="text-lg font-medium text-indigo-200 mb-1">instanțe reale unice</span>
+                </div>
+                <p class="text-xs text-indigo-300 mt-4 border-t border-indigo-500/50 pt-3">Amprenta de memorie a fost redusă cu <strong class="text-white">@((100 - ((double)Model.TotalFactoryInstances / Model.TotalDocumentCharacters * 100)).ToString("F0"))%</strong>.</p>
+            </div>
+        </div>
+    </div>
 </div>

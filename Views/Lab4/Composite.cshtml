@@ -1,104 +1,132 @@
 @model TMPP_CRM.Domain.Composite.MenuGroup
 @using TMPP_CRM.Domain.Composite
 @{
-    ViewData["Title"] = "Composite Pattern – Meniu Restaurant";
+    ViewData["Title"] = "Catalog Produse & Pachete";
 }
 
-<div class="mb-6">
-    <a asp-controller="Lab4" asp-action="Index" class="text-orange-500 hover:underline text-sm">← Laborator 4</a>
-    <h1 class="text-3xl font-bold text-gray-800 mt-2">🌳 Composite Pattern</h1>
-    <p class="text-gray-500 mt-1">Ierarhie de meniu – frunze și grupuri tratate uniform</p>
+<div class="mb-6 flex items-center justify-between">
+    <div>
+        <h1 class="text-2xl font-bold text-gray-900 flex items-center">
+            <i class="ph ph-list-dashes text-orange-600 mr-3 text-3xl"></i>
+            Catalog Produse Complex
+        </h1>
+        <p class="text-gray-500 mt-1">Gestionează ierarhia de produse individuale și pachete cu preț calculat dinamic.</p>
+    </div>
 </div>
 
-<div class="bg-orange-50 border border-orange-200 rounded-xl p-5 mb-6 text-sm text-orange-800">
-    <strong>Cum funcționează?</strong> Atât <code>MenuItem</code> (produs individual) cât și <code>MenuGroup</code>
-    (submeniu) implementează <code>IMenuComponent</code>. <code>GetPrice()</code> funcționează identic pe ambele —
-    suma se calculează <strong>recursiv</strong> prin toată ierarhia.
+<div class="bg-white border border-gray-100 rounded-xl p-6 mb-8 text-sm text-gray-600 shadow-sm flex items-start gap-4">
+    <i class="ph ph-tree-structure text-orange-500 text-2xl"></i>
+    <div>
+        <strong class="text-gray-800">Motor de Prețuri Recurent:</strong>
+        Catalogul tratează uniform atât produsele simple (ex: Modul CRM) cât și pachetele (ex: Suită Enterprise). Când soliciți prețul unui pachet, sistemul traversează automat întreaga structură arborescentă și cumulează prețurile tuturor componentelor incluse, fără logică suplimentară în interfață.
+    </div>
 </div>
 
 <!-- Header total -->
-<div class="bg-gradient-to-r from-orange-600 to-orange-800 rounded-2xl p-5 text-white mb-6 flex justify-between items-center">
-    <div>
-        <p class="text-orange-200 text-xs uppercase tracking-widest">Meniu Complet</p>
-        <h2 class="text-2xl font-bold">@Model.GetName()</h2>
-        <p class="text-orange-100 text-sm mt-1">@Model.GetDescription()</p>
+<div class="bg-gradient-to-r from-gray-900 to-gray-800 rounded-2xl p-8 text-white mb-8 flex flex-col md:flex-row justify-between items-center relative overflow-hidden shadow-lg border border-gray-700">
+    <div class="absolute top-0 right-0 -mt-10 -mr-10 text-white/5">
+        <i class="ph ph-tag text-9xl"></i>
     </div>
-    <div class="text-right">
-        <p class="text-orange-200 text-sm">Total meniu</p>
-        <p class="text-3xl font-bold">@Model.GetPrice().ToString("F2") RON</p>
+    <div class="relative z-10 w-full md:w-auto text-center md:text-left mb-6 md:mb-0">
+        <p class="text-orange-400 text-xs font-bold uppercase tracking-widest mb-1">Grupă Principală</p>
+        <h2 class="text-3xl font-extrabold mb-1">@Model.GetName()</h2>
+        <p class="text-gray-400 text-sm">@Model.GetDescription()</p>
+    </div>
+    <div class="relative z-10 w-full md:w-auto bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/10 text-center md:text-right">
+        <p class="text-gray-300 text-sm uppercase tracking-wider font-semibold mb-1">Valoare Totală Portofoliu</p>
+        <p class="text-3xl font-black text-orange-400">@Model.GetPrice().ToString("F2") <span class="text-xl text-gray-400 font-bold">RON</span></p>
     </div>
 </div>
 
 <!-- Ierarhia vizuala -->
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
     @foreach (var group in Model.GetChildren())
     {
         var menuGroup = group as MenuGroup;
         if (menuGroup == null) continue;
 
-        <div class="bg-white rounded-2xl shadow border border-gray-100 overflow-hidden">
-            <div class="bg-orange-100 border-b border-orange-200 px-5 py-4 flex justify-between items-center">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:border-orange-300 transition-colors">
+            <div class="bg-orange-50/50 border-b border-gray-100 p-5 flex justify-between items-start">
                 <div>
-                    <div class="flex items-center gap-2">
-                        <span class="text-orange-600">📋</span>
-                        <h3 class="font-bold text-gray-800">@menuGroup.GetName()</h3>
-                        <span class="text-xs bg-orange-200 text-orange-700 px-2 py-0.5 rounded-full">Compus</span>
+                    <div class="flex items-center gap-3 mb-1">
+                        <div class="w-8 h-8 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center">
+                            <i class="ph ph-folder-open text-lg"></i>
+                        </div>
+                        <h3 class="font-bold text-gray-900 text-lg">@menuGroup.GetName()</h3>
+                        <span class="text-[10px] uppercase font-bold bg-gray-900 text-white px-2 py-0.5 rounded-md">Pachet</span>
                     </div>
                     @if (!string.IsNullOrEmpty(menuGroup.GetDescription()))
                     {
-                        <p class="text-xs text-gray-500 mt-1 ml-6">@menuGroup.GetDescription()</p>
+                        <p class="text-sm text-gray-500 ml-11">@menuGroup.GetDescription()</p>
                     }
                 </div>
-                <div class="text-right">
-                    <p class="text-xs text-gray-400">Total grup</p>
-                    <p class="font-bold text-orange-700">@menuGroup.GetPrice().ToString("F2") RON</p>
+                <div class="text-right bg-white px-3 py-1.5 rounded-lg border border-gray-100 shadow-sm">
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Subtotal Pachet</p>
+                    <p class="font-black text-gray-900">@menuGroup.GetPrice().ToString("F2") RON</p>
                 </div>
             </div>
-            <div class="divide-y divide-gray-50">
+            
+            <div class="divide-y divide-gray-50 bg-white">
                 @foreach (var child in menuGroup.GetChildren())
                 {
                     if (child is MenuGroup subGroup)
                     {
                         <!-- Subgroup -->
-                        <div class="px-4 py-2 bg-orange-50">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="text-xs font-semibold text-orange-600 uppercase">📦 @subGroup.GetName()</span>
-                                <span class="text-xs text-orange-600 font-bold">@subGroup.GetPrice().ToString("F2") RON</span>
-                            </div>
-                            @foreach (var leaf in subGroup.GetChildren())
-                            {
-                                <div class="flex justify-between items-center py-1 pl-3">
-                                    <div>
-                                        <span class="text-sm text-gray-700">🍽 @leaf.GetName()</span>
-                                        @if (!string.IsNullOrEmpty(leaf.GetDescription()))
-                                        {
-                                            <span class="text-xs text-gray-400 ml-1">(@leaf.GetDescription())</span>
-                                        }
-                                    </div>
-                                    <span class="text-sm font-medium text-gray-800 ml-4 shrink-0">@leaf.GetPrice().ToString("F2") RON</span>
+                        <div class="p-4 bg-gray-50/50">
+                            <div class="flex justify-between items-center mb-3">
+                                <div class="flex items-center text-sm font-bold text-gray-700 uppercase tracking-wide">
+                                    <i class="ph ph-stack mr-2 text-orange-500"></i> @subGroup.GetName()
                                 </div>
-                            }
+                                <span class="text-xs bg-white border border-gray-200 px-2 py-1 rounded-md font-bold text-gray-700">@subGroup.GetPrice().ToString("F2") RON</span>
+                            </div>
+                            <div class="pl-6 space-y-2 relative before:absolute before:left-2.5 before:top-0 before:bottom-0 before:w-px before:bg-gray-200">
+                                @foreach (var leaf in subGroup.GetChildren())
+                                {
+                                    <div class="flex justify-between items-start py-2 relative">
+                                        <div class="absolute left-[-23px] top-4 w-4 h-px bg-gray-200"></div>
+                                        <div class="flex items-start">
+                                            <i class="ph ph-cube text-gray-400 mr-2 mt-0.5"></i>
+                                            <div>
+                                                <span class="text-sm font-medium text-gray-800 block">@leaf.GetName()</span>
+                                                @if (!string.IsNullOrEmpty(leaf.GetDescription()))
+                                                {
+                                                    <span class="text-xs text-gray-500 block mt-0.5">@leaf.GetDescription()</span>
+                                                }
+                                            </div>
+                                        </div>
+                                        <span class="text-sm font-bold text-gray-900 ml-4 whitespace-nowrap bg-gray-100/50 px-2 py-0.5 rounded">@leaf.GetPrice().ToString("F2") RON</span>
+                                    </div>
+                                }
+                            </div>
                         </div>
                     }
                     else
                     {
                         <!-- Leaf item -->
-                        <div class="flex justify-between items-center px-5 py-3 hover:bg-gray-50">
-                            <div>
-                                <span class="text-sm text-gray-700">🍽 @child.GetName()</span>
-                                @if (!string.IsNullOrEmpty(child.GetDescription()))
-                                {
-                                    <p class="text-xs text-gray-400 mt-0.5">@child.GetDescription()</p>
-                                }
+                        <div class="flex justify-between items-center p-4 hover:bg-gray-50 transition-colors group">
+                            <div class="flex items-start">
+                                <div class="w-8 h-8 rounded-lg bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-400 mr-3 group-hover:bg-white group-hover:text-orange-500 transition-colors">
+                                    <i class="ph ph-cube text-lg"></i>
+                                </div>
+                                <div>
+                                    <span class="text-sm font-semibold text-gray-800 block">@child.GetName()</span>
+                                    @if (!string.IsNullOrEmpty(child.GetDescription()))
+                                    {
+                                        <p class="text-xs text-gray-500 mt-0.5">@child.GetDescription()</p>
+                                    }
+                                </div>
                             </div>
-                            <span class="text-sm font-semibold text-gray-800 ml-4 shrink-0">@child.GetPrice().ToString("F2") RON</span>
+                            <span class="text-sm font-black text-gray-900 ml-4 shrink-0 bg-gray-50 px-2 py-1 rounded-md border border-gray-100">@child.GetPrice().ToString("F2") RON</span>
                         </div>
                     }
                 }
             </div>
-            <div class="px-5 py-2 bg-gray-50 border-t flex justify-between text-xs text-gray-400">
-                <span>@menuGroup.GetChildren().Count componente</span>
-                <span>IsComposite: <strong class="text-orange-600">true</strong></span>
+            
+            <div class="bg-gray-50 px-5 py-3 border-t border-gray-100 flex justify-between items-center">
+                <span class="text-xs font-medium text-gray-500 bg-white border border-gray-200 px-2 py-1 rounded">
+                    <i class="ph ph-hash mr-1"></i> @menuGroup.GetChildren().Count elemente în pachet
+                </span>
+                <span class="text-xs text-gray-500 font-medium">Arhitectură: <span class="text-orange-600 font-bold">Node</span></span>
             </div>
         </div>
     }

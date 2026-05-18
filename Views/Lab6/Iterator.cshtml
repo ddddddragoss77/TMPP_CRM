@@ -1,0 +1,102 @@
+@{
+    ViewData["Title"] = "Procesare Loturi Secvențiale";
+}
+
+<div class="mb-6 flex items-center justify-between">
+    <div>
+        <h1 class="text-2xl font-bold text-gray-900 flex items-center">
+            <i class="ph ph-list-numbers text-amber-600 mr-3 text-3xl"></i>
+            Procesare Liste (Iterație)
+        </h1>
+        <p class="text-gray-500 mt-1">Interfața uniformă pentru extragerea și listarea elementelor din colecții de date ascunse.</p>
+    </div>
+</div>
+
+<div class="bg-white border border-gray-100 rounded-xl p-6 mb-8 text-sm text-gray-600 shadow-sm flex items-start gap-4">
+    <i class="ph ph-brackets-curly text-amber-500 text-2xl"></i>
+    <div>
+        <strong class="text-gray-800">Abstracția Colecției:</strong>
+        În fundal, CRM-ul poate reține Deal-urile într-un Array, o Listă sau un B-Tree. Folosind un obiect dedicat pentru traversare (funcțiile <code>HasNext()</code> și <code>Next()</code>), interfața grafică afișează secvențial liniile fără să se lege de modul în care datele sunt de fapt stocate, prevenind erorile de cuplare.
+    </div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+    <div class="md:col-span-8">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="bg-gray-50 border-b border-gray-200 px-6 py-4 flex justify-between items-center">
+                <h3 class="font-bold text-gray-800 flex items-center">
+                    <i class="ph ph-database mr-2 text-amber-500"></i> Oportunități Extrase (Output Bază de Date)
+                </h3>
+                <span class="bg-amber-100 text-amber-800 text-[10px] font-medium font-bold px-2 py-1 rounded">CURSOR_ACTIVE</span>
+            </div>
+            
+            <div class="p-0">
+                <table class="w-full text-sm text-left">
+                    <thead class="text-xs text-gray-500 uppercase bg-gray-50 border-b border-gray-100">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 font-medium">Index Iterare</th>
+                            <th scope="col" class="px-6 py-3 font-medium">Element Extras (Obiect)</th>
+                            <th scope="col" class="px-6 py-3 font-medium text-right">Status Traversare</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-50">
+                        @{
+                            int index = 0;
+                            var items = ViewBag.DealList as List<string>;
+                            int total = items?.Count ?? 0;
+                        }
+                        @foreach(var item in ViewBag.DealList)
+                        {
+                            index++;
+                            <tr class="hover:bg-amber-50/30 transition-colors group">
+                                <td class="px-6 py-4 font-medium text-gray-400">[@(index - 1)]</td>
+                                <td class="px-6 py-4 font-semibold text-gray-800 flex items-center">
+                                    <i class="ph ph-briefcase mr-2 text-amber-500 opacity-50 group-hover:opacity-100 transition-opacity"></i>
+                                    @item
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <span class="inline-flex items-center text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded @(index == total ? "bg-red-100 text-red-600" : "bg-emerald-100 text-emerald-600")">
+                                        @(index == total ? "END_OF_COLLECTION" : "HAS_NEXT: TRUE")
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="bg-gray-50 border-t border-gray-200 px-6 py-3 flex justify-between items-center text-xs text-gray-500">
+                <span>Metodă de Acces: O(1) per pas</span>
+                <span>Total Obiecte: @total</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="md:col-span-4">
+        <div class="bg-gray-900 rounded-2xl shadow-lg border border-gray-800 p-6 h-full flex flex-col">
+            <h3 class="font-bold text-white mb-6 flex items-center border-b border-gray-800 pb-3">
+                <i class="ph ph-terminal-window mr-2 text-amber-400"></i> Backend Log
+            </h3>
+            
+            <div class="font-medium text-xs text-gray-400 space-y-2 flex-grow">
+                <div class="text-amber-500">> Initialize Collection...</div>
+                <div>> DealCollection created (Count: @total)</div>
+                <div class="text-amber-500">> Create Iterator...</div>
+                <div>> Iterator bound to Collection</div>
+                <div class="mt-4 border-t border-gray-800 pt-4"></div>
+                
+                @for(int i = 0; i < total; i++)
+                {
+                    <div class="opacity-75">
+                        <span class="text-emerald-400">while</span> (iterator.HasNext()) {
+                    </div>
+                    <div class="pl-4 text-gray-300">
+                        var obj = iterator.Next();
+                    </div>
+                    <div class="opacity-75">}</div>
+                }
+                <div class="text-red-400 mt-2">> HasNext() returned False. Break.</div>
+            </div>
+        </div>
+    </div>
+</div>

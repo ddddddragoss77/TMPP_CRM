@@ -16,5 +16,11 @@ namespace TMPP_CRM.Domain.Entities
         
         public Guid ClientId { get; set; }
         public Client? Client { get; set; }
+        
+        public decimal GetDiscountedValue(TMPP_CRM.Domain.Strategy.IDiscountStrategy strategy)
+        {
+            if (strategy == null) return Value;
+            return strategy.CalculateDiscount(Value);
+        }
     }
 }

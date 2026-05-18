@@ -1,82 +1,86 @@
 @{
-    ViewData["Title"] = "Laborator 5 – Paternuri Structurale";
+    ViewData["Title"] = "Optimizare & Securitate";
 }
 
 <div class="mb-8">
-    <h1 class="text-3xl font-bold text-gray-800 mb-2">Laborator 5</h1>
-    <p class="text-gray-500 text-lg">Paternuri de Proiectare Structurale: Flyweight, Decorator, Bridge și Proxy</p>
+    <h1 class="text-3xl font-bold text-gray-800 mb-2">Platformă Core: Securitate, Media & Optimizări</h1>
+    <p class="text-gray-500 text-lg">Infrastructura de bază pentru gestionarea accesului, extensibilitate și performanță.</p>
 </div>
 
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 
-    <!-- Flyweight -->
-    <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-100">
-        <div class="bg-gradient-to-br from-indigo-500 to-indigo-700 p-6 text-white">
-            <div class="text-4xl mb-3">🪶</div>
-            <h2 class="text-xl font-bold">Flyweight Pattern</h2>
-            <p class="text-indigo-100 text-sm mt-1">Optimizarea memoriei</p>
+    <!-- Flyweight -> Optimizare Memorie -->
+    <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden border border-gray-100 group">
+        <div class="bg-indigo-50 p-6 flex flex-col items-center group-hover:bg-indigo-100 transition-colors">
+            <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-indigo-600 mb-4 shadow-sm">
+                <i class="ph ph-feather text-3xl"></i>
+            </div>
+            <h2 class="text-xl font-bold text-gray-900 text-center">Optimizare Memorie</h2>
+            <p class="text-indigo-600 text-sm mt-1 font-medium">Text Rendering Engine</p>
         </div>
         <div class="p-6">
-            <p class="text-gray-600 text-sm mb-4">
-                Reducerea consumului de memorie prin partajarea obiectelor identice (caractere dintr-un editor de text).
+            <p class="text-gray-600 text-sm mb-6 text-center">
+                Tehnologie de compresie RAM prin partajarea instanțelor grafice pentru randarea rapoartelor mari de zeci de mii de caractere.
             </p>
-            <a asp-controller="Lab5" asp-action="Flyweight"
-               class="block text-center bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">
-                Vezi Demo →
+            <a asp-controller="Lab5" asp-action="Flyweight" class="block text-center bg-white border border-gray-200 hover:border-indigo-500 hover:text-indigo-600 text-gray-700 font-semibold py-2.5 px-4 rounded-xl transition duration-200">
+                Verifică Performanța
             </a>
         </div>
     </div>
 
-    <!-- Decorator -->
-    <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-100">
-        <div class="bg-gradient-to-br from-emerald-500 to-emerald-700 p-6 text-white">
-            <div class="text-4xl mb-3">🎁</div>
-            <h2 class="text-xl font-bold">Decorator Pattern</h2>
-            <p class="text-emerald-100 text-sm mt-1">Extindere dinamică</p>
+    <!-- Decorator -> Sistem Notificari -->
+    <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden border border-gray-100 group">
+        <div class="bg-emerald-50 p-6 flex flex-col items-center group-hover:bg-emerald-100 transition-colors">
+            <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-emerald-600 mb-4 shadow-sm">
+                <i class="ph ph-bell-ringing text-3xl"></i>
+            </div>
+            <h2 class="text-xl font-bold text-gray-900 text-center">Sistem Notificări</h2>
+            <p class="text-emerald-600 text-sm mt-1 font-medium">Alerting Extensibil</p>
         </div>
         <div class="p-6">
-            <p class="text-gray-600 text-sm mb-4">
-                Adăugarea de noi funcționalități de notificare (SMS, Push) fără modificarea obiectelor existente.
+            <p class="text-gray-600 text-sm mb-6 text-center">
+                Configurează canalele de alertare ale agenților tăi adăugând în mod dinamic suport pentru SMS și Push peste email-ul de bază.
             </p>
-            <a asp-controller="Lab5" asp-action="Decorator"
-               class="block text-center bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">
-                Vezi Demo →
+            <a asp-controller="Lab5" asp-action="Decorator" class="block text-center bg-white border border-gray-200 hover:border-emerald-500 hover:text-emerald-600 text-gray-700 font-semibold py-2.5 px-4 rounded-xl transition duration-200">
+                Configurează Alerte
             </a>
         </div>
     </div>
 
-    <!-- Bridge -->
-    <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-100">
-        <div class="bg-gradient-to-br from-amber-500 to-amber-700 p-6 text-white">
-            <div class="text-4xl mb-3">🌉</div>
-            <h2 class="text-xl font-bold">Bridge Pattern</h2>
-            <p class="text-amber-100 text-sm mt-1">Decuplarea abstracției</p>
+    <!-- Bridge -> Media Platform -->
+    <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden border border-gray-100 group">
+        <div class="bg-amber-50 p-6 flex flex-col items-center group-hover:bg-amber-100 transition-colors">
+            <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-amber-600 mb-4 shadow-sm">
+                <i class="ph ph-monitor-play text-3xl"></i>
+            </div>
+            <h2 class="text-xl font-bold text-gray-900 text-center">Media Streaming</h2>
+            <p class="text-amber-600 text-sm mt-1 font-medium">Player Multi-Device</p>
         </div>
         <div class="p-6">
-            <p class="text-gray-600 text-sm mb-4">
-                Decuplarea fișierelor media (Audio, Video) de pe dispozitivele de redare (Phone, TV).
+            <p class="text-gray-600 text-sm mb-6 text-center">
+                Modul decuplat pentru redarea atașamentelor media din dosarele clienților, compatibil cu multiple ecrane și platforme hardware.
             </p>
-            <a asp-controller="Lab5" asp-action="Bridge"
-               class="block text-center bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">
-                Vezi Demo →
+            <a asp-controller="Lab5" asp-action="Bridge" class="block text-center bg-white border border-gray-200 hover:border-amber-500 hover:text-amber-600 text-gray-700 font-semibold py-2.5 px-4 rounded-xl transition duration-200">
+                Deschide Player
             </a>
         </div>
     </div>
 
-    <!-- Proxy -->
-    <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-100">
-        <div class="bg-gradient-to-br from-purple-500 to-purple-700 p-6 text-white">
-            <div class="text-4xl mb-3">🛡️</div>
-            <h2 class="text-xl font-bold">Proxy Pattern</h2>
-            <p class="text-purple-100 text-sm mt-1">Control acces</p>
+    <!-- Proxy -> Control Acces -->
+    <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden border border-gray-100 group">
+        <div class="bg-purple-50 p-6 flex flex-col items-center group-hover:bg-purple-100 transition-colors">
+            <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-purple-600 mb-4 shadow-sm">
+                <i class="ph ph-shield-check text-3xl"></i>
+            </div>
+            <h2 class="text-xl font-bold text-gray-900 text-center">Control Acces</h2>
+            <p class="text-purple-600 text-sm mt-1 font-medium">Securitate pe Roluri</p>
         </div>
         <div class="p-6">
-            <p class="text-gray-600 text-sm mb-4">
-                Un proxy de protecție controlează accesul la date financiare sau sensibile din sistem pe baza rolului.
+            <p class="text-gray-600 text-sm mb-6 text-center">
+                Filtrează cererile de rețea prin Firewall-ul intern pentru a proteja datele financiare confidențiale în funcție de nivelul de clearance al angajatului.
             </p>
-            <a asp-controller="Lab5" asp-action="Proxy"
-               class="block text-center bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">
-                Vezi Demo →
+            <a asp-controller="Lab5" asp-action="Proxy" class="block text-center bg-white border border-gray-200 hover:border-purple-500 hover:text-purple-600 text-gray-700 font-semibold py-2.5 px-4 rounded-xl transition duration-200">
+                Testează Securitatea
             </a>
         </div>
     </div>

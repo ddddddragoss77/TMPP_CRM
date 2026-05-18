@@ -1,62 +1,154 @@
 @model TMPP_CRM.Controllers.ProxyViewModel
 
 @{
-    ViewData["Title"] = "Proxy Pattern Demo";
+    ViewData["Title"] = "Firewall & Control Acces";
 }
 
-<div class="mb-6">
-    <a asp-controller="Lab5" asp-action="Index" class="text-purple-600 hover:text-purple-800 font-medium">&larr; Înapoi la Laborator 5</a>
+<div class="mb-6 flex items-center justify-between">
+    <div>
+        <h1 class="text-2xl font-bold text-gray-900 flex items-center">
+            <i class="ph ph-shield-check text-purple-600 mr-3 text-3xl"></i>
+            Firewall de Protecție Internă
+        </h1>
+        <p class="text-gray-500 mt-1">Interceptează și validează cererile către baza de date financiară pe baza rolului (RBAC).</p>
+    </div>
 </div>
 
-<div class="bg-white rounded-2xl shadow-lg p-8 max-w-3xl mx-auto border border-gray-100">
-    <h1 class="text-3xl font-bold text-gray-800 mb-6 flex items-center">
-        <span class="text-4xl mr-3">🛡️</span> Proxy Pattern Demo (Protection)
-    </h1>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <!-- Controale Clearance -->
+    <div class="lg:col-span-4">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sticky top-6">
+            <h3 class="font-bold text-gray-800 mb-6 flex items-center border-b border-gray-100 pb-3">
+                <i class="ph ph-identification-badge mr-2 text-purple-500"></i> Simulator Identitate
+            </h3>
+            
+            <form method="get" asp-action="Proxy" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-4 uppercase tracking-wider text-xs">Nivel Clearance Curent:</label>
+                    <div class="space-y-3">
+                        <label class="relative block cursor-pointer group">
+                            <input type="radio" name="role" value="Admin" class="peer sr-only" @(Model.Role == "Admin" ? "checked" : "") onchange="this.form.submit()">
+                            <div class="flex items-center p-4 border-2 rounded-xl transition-all peer-checked:border-red-500 peer-checked:bg-red-50 hover:bg-gray-50 @(Model.Role == "Admin" ? "border-red-500 bg-red-50" : "border-gray-200")">
+                                <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center mr-3">
+                                    <i class="ph ph-crown text-xl text-red-600"></i>
+                                </div>
+                                <div>
+                                    <span class="block font-bold text-gray-900">Administrator</span>
+                                    <span class="block text-xs text-gray-500 mt-0.5">Acces total RW</span>
+                                </div>
+                                <i class="ph ph-check-circle ml-auto text-xl text-red-500 opacity-0 peer-checked:opacity-100 transition-opacity"></i>
+                            </div>
+                        </label>
+                        
+                        <label class="relative block cursor-pointer group">
+                            <input type="radio" name="role" value="Agent" class="peer sr-only" @(Model.Role == "Agent" ? "checked" : "") onchange="this.form.submit()">
+                            <div class="flex items-center p-4 border-2 rounded-xl transition-all peer-checked:border-blue-500 peer-checked:bg-blue-50 hover:bg-gray-50 @(Model.Role == "Agent" ? "border-blue-500 bg-blue-50" : "border-gray-200")">
+                                <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+                                    <i class="ph ph-headset text-xl text-blue-600"></i>
+                                </div>
+                                <div>
+                                    <span class="block font-bold text-gray-900">Agent Vânzări</span>
+                                    <span class="block text-xs text-gray-500 mt-0.5">Acces limitat RO</span>
+                                </div>
+                                <i class="ph ph-check-circle ml-auto text-xl text-blue-500 opacity-0 peer-checked:opacity-100 transition-opacity"></i>
+                            </div>
+                        </label>
 
-    <div class="flex flex-col md:flex-row gap-8 mb-8">
-        <!-- Controale -->
-        <div class="md:w-1/3 bg-gray-50 p-6 rounded-xl border border-gray-200">
-            <h3 class="text-lg font-semibold mb-4 text-gray-700">Simulare Login</h3>
-            <form method="get" asp-action="Proxy">
-                <label class="block text-sm text-gray-600 mb-2">Alege rolul utilizatorului:</label>
-                <div class="space-y-3 mb-6">
-                    <label class="flex items-center space-x-2">
-                        <input type="radio" name="role" value="Admin" @(Model.Role == "Admin" ? "checked" : "") class="text-purple-600 focus:ring-purple-500">
-                        <span class="font-medium text-red-600">Admin</span>
-                    </label>
-                    <label class="flex items-center space-x-2">
-                        <input type="radio" name="role" value="Agent" @(Model.Role == "Agent" ? "checked" : "") class="text-purple-600 focus:ring-purple-500">
-                        <span class="font-medium text-blue-600">Agent</span>
-                    </label>
-                    <label class="flex items-center space-x-2">
-                        <input type="radio" name="role" value="Guest" @(Model.Role == "Guest" ? "checked" : "") class="text-purple-600 focus:ring-purple-500">
-                        <span class="font-medium text-gray-600">Guest</span>
-                    </label>
+                        <label class="relative block cursor-pointer group">
+                            <input type="radio" name="role" value="Guest" class="peer sr-only" @(Model.Role == "Guest" ? "checked" : "") onchange="this.form.submit()">
+                            <div class="flex items-center p-4 border-2 rounded-xl transition-all peer-checked:border-gray-500 peer-checked:bg-gray-100 hover:bg-gray-50 @(Model.Role == "Guest" ? "border-gray-500 bg-gray-100" : "border-gray-200")">
+                                <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mr-3">
+                                    <i class="ph ph-user text-xl text-gray-600"></i>
+                                </div>
+                                <div>
+                                    <span class="block font-bold text-gray-900">Vizitator Anonim</span>
+                                    <span class="block text-xs text-gray-500 mt-0.5">Fără acces la date</span>
+                                </div>
+                                <i class="ph ph-check-circle ml-auto text-xl text-gray-500 opacity-0 peer-checked:opacity-100 transition-opacity"></i>
+                            </div>
+                        </label>
+                    </div>
                 </div>
-                
-                <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">
-                    Schimbă Rolul
-                </button>
             </form>
-        </div>
-
-        <!-- Rezultate -->
-        <div class="md:w-2/3 space-y-4">
-            <div class="p-5 rounded-xl border @(Model.ReadResult.StartsWith("Eroare") ? "bg-red-50 border-red-200" : "bg-green-50 border-green-200")">
-                <h4 class="text-sm font-bold uppercase tracking-wider mb-2 @(Model.ReadResult.StartsWith("Eroare") ? "text-red-700" : "text-green-700")">
-                    Test Citire Date Client
-                </h4>
-                <p class="text-gray-800">@Model.ReadResult</p>
-                <p class="text-xs text-gray-500 mt-2">Necesar: Admin, Manager sau Agent</p>
-            </div>
-
-            <div class="p-5 rounded-xl border @(Model.WriteResult.StartsWith("Eroare") ? "bg-red-50 border-red-200" : "bg-green-50 border-green-200")">
-                <h4 class="text-sm font-bold uppercase tracking-wider mb-2 @(Model.WriteResult.StartsWith("Eroare") ? "text-red-700" : "text-green-700")">
-                    Test Scriere Date Financiare
-                </h4>
-                <p class="text-gray-800">@Model.WriteResult</p>
-                <p class="text-xs text-gray-500 mt-2">Necesar: Admin sau Manager</p>
+            
+            <div class="mt-6 bg-purple-50 p-4 rounded-xl border border-purple-100 flex items-start text-xs text-purple-800">
+                <i class="ph ph-info text-lg mr-2 text-purple-600"></i>
+                <p>Orice interacțiune cu baza de date trece printr-un proxy de securitate. Selectând rolurile de mai sus, testezi mecanismul de autorizare.</p>
             </div>
         </div>
+    </div>
+
+    <!-- Output Logs -->
+    <div class="lg:col-span-8 space-y-6">
+        
+        <!-- Read Test -->
+        <div class="bg-white rounded-2xl shadow-sm border overflow-hidden @(Model.ReadResult.StartsWith("Eroare") ? "border-red-200" : "border-emerald-200")">
+            <div class="px-6 py-4 flex justify-between items-center @(Model.ReadResult.StartsWith("Eroare") ? "bg-red-50" : "bg-emerald-50") border-b @(Model.ReadResult.StartsWith("Eroare") ? "border-red-100" : "border-emerald-100")">
+                <h4 class="font-bold flex items-center @(Model.ReadResult.StartsWith("Eroare") ? "text-red-800" : "text-emerald-800")">
+                    <i class="ph ph-eye mr-2 text-xl"></i> Test: Interogare Bază Date (Read)
+                </h4>
+                <div class="flex space-x-2">
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-red-100 text-red-700 border border-red-200">Admin</span>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-blue-100 text-blue-700 border border-blue-200">Agent</span>
+                </div>
+            </div>
+            <div class="p-6 relative">
+                @if (Model.ReadResult.StartsWith("Eroare"))
+                {
+                    <div class="flex items-start">
+                        <i class="ph ph-x-octagon text-4xl text-red-500 mr-4"></i>
+                        <div>
+                            <h5 class="text-red-600 font-bold mb-1">Acces Interzis (403 Forbidden)</h5>
+                            <p class="text-gray-700 font-medium text-sm bg-gray-50 p-3 rounded-lg border border-gray-200">@Model.ReadResult</p>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="flex items-start">
+                        <i class="ph ph-check-circle text-4xl text-emerald-500 mr-4"></i>
+                        <div>
+                            <h5 class="text-emerald-600 font-bold mb-1">Acces Aprobat (200 OK)</h5>
+                            <p class="text-gray-700 font-medium text-sm bg-gray-50 p-3 rounded-lg border border-gray-200">@Model.ReadResult</p>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Write Test -->
+        <div class="bg-white rounded-2xl shadow-sm border overflow-hidden @(Model.WriteResult.StartsWith("Eroare") ? "border-red-200" : "border-emerald-200")">
+            <div class="px-6 py-4 flex justify-between items-center @(Model.WriteResult.StartsWith("Eroare") ? "bg-red-50" : "bg-emerald-50") border-b @(Model.WriteResult.StartsWith("Eroare") ? "border-red-100" : "border-emerald-100")">
+                <h4 class="font-bold flex items-center @(Model.WriteResult.StartsWith("Eroare") ? "text-red-800" : "text-emerald-800")">
+                    <i class="ph ph-pencil-simple mr-2 text-xl"></i> Test: Modificare Date Financiare (Write)
+                </h4>
+                <div class="flex space-x-2">
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-red-100 text-red-700 border border-red-200">Admin Only</span>
+                </div>
+            </div>
+            <div class="p-6 relative">
+                @if (Model.WriteResult.StartsWith("Eroare"))
+                {
+                    <div class="flex items-start">
+                        <i class="ph ph-x-octagon text-4xl text-red-500 mr-4"></i>
+                        <div>
+                            <h5 class="text-red-600 font-bold mb-1">Acces Interzis (403 Forbidden)</h5>
+                            <p class="text-gray-700 font-medium text-sm bg-gray-50 p-3 rounded-lg border border-gray-200">@Model.WriteResult</p>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="flex items-start">
+                        <i class="ph ph-check-circle text-4xl text-emerald-500 mr-4"></i>
+                        <div>
+                            <h5 class="text-emerald-600 font-bold mb-1">Acces Aprobat (200 OK)</h5>
+                            <p class="text-gray-700 font-medium text-sm bg-gray-50 p-3 rounded-lg border border-gray-200">@Model.WriteResult</p>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
     </div>
 </div>

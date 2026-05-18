@@ -1,0 +1,150 @@
+@model TMPP_CRM.Domain.Entities.Deal
+@{
+    ViewData["Title"] = "Tranzacție (Undo Engine)";
+}
+
+<div class="mb-6 flex items-center justify-between">
+    <div>
+        <h1 class="text-2xl font-bold text-gray-900 flex items-center">
+            <i class="ph ph-clock-counter-clockwise text-emerald-600 mr-3 text-3xl"></i>
+            Jurnal Operațiuni Tranzacție
+        </h1>
+        <p class="text-gray-500 mt-1">Sistemul înregistrează fiecare modificare de stare a contractului ca o "Comandă" reversibilă.</p>
+    </div>
+</div>
+
+<div class="bg-white border border-gray-100 rounded-xl p-6 mb-8 text-sm text-gray-600 shadow-sm flex items-start gap-4">
+    <i class="ph ph-shield-warning text-emerald-500 text-2xl"></i>
+    <div>
+        <strong class="text-gray-800">Mecanism de Anulare (Undo):</strong>
+        Dacă un agent mută o ofertă din greșeală (ex. o declară 'Câștigată' prea devreme), managerul are posibilitatea să ruleze "Undo". Fiecare etapă este un obiect de sine stătător stocat în istoric care reține exact starea anterioară, permițând rollback-ul precis al datelor din BD.
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <div class="lg:col-span-4">
+        <div class="bg-gray-900 rounded-2xl shadow-md border border-gray-800 p-6 sticky top-6">
+            <div class="text-center mb-6 pb-6 border-b border-gray-800">
+                <div class="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-emerald-500/30">
+                    <i class="ph ph-handshake text-3xl"></i>
+                </div>
+                <h3 class="text-white font-bold text-lg mb-1">Contract: @Model.Title</h3>
+                <p class="text-gray-400 text-sm font-medium">ID: #TR-@Model.Id.ToString().Substring(0,8)</p>
+            </div>
+            
+            <div class="space-y-4">
+                <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
+                    <span class="block text-xs text-gray-500 uppercase tracking-widest font-bold mb-1">Stadiu Inițial Înregistrat</span>
+                    <span class="text-gray-300 font-medium text-sm">@ViewBag.InitialStage</span>
+                </div>
+                <div class="bg-emerald-900/30 rounded-xl p-4 border border-emerald-800">
+                    <span class="block text-xs text-emerald-500/70 uppercase tracking-widest font-bold mb-1">Stadiu Curent în BD</span>
+                    <span class="text-emerald-400 font-bold text-lg">@ViewBag.AfterSecondUndo</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="lg:col-span-8">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="bg-gray-50 border-b border-gray-200 px-6 py-4 flex justify-between items-center">
+                <h3 class="font-bold text-gray-800 flex items-center">
+                    <i class="ph ph-list-dashes mr-2 text-emerald-500"></i> Audit Trail (Istoric Comenzi)
+                </h3>
+            </div>
+            
+            <div class="p-8">
+                <div class="relative">
+                    <!-- Line -->
+                    <div class="absolute left-8 top-4 bottom-4 w-0.5 bg-gray-100"></div>
+
+                    <div class="space-y-8 relative z-10">
+                        <!-- Step 1 -->
+                        <div class="flex items-start group">
+                            <div class="w-16 flex-shrink-0 flex justify-center">
+                                <div class="w-10 h-10 rounded-full bg-white border-[3px] border-gray-300 flex items-center justify-center shadow-sm relative z-10">
+                                    <i class="ph ph-file-plus text-gray-400"></i>
+                                </div>
+                            </div>
+                            <div class="ml-4 flex-grow bg-white border border-gray-100 rounded-xl p-4 shadow-sm hover:border-gray-300 transition-colors">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="text-xs font-bold uppercase tracking-wider text-gray-500">Momentul 0: Creare</span>
+                                    <span class="text-xs text-gray-400">System</span>
+                                </div>
+                                <p class="text-gray-900 font-medium">Deal înregistrat în sistem cu starea: <span class="bg-gray-100 px-2 py-0.5 rounded text-sm">@ViewBag.InitialStage</span></p>
+                            </div>
+                        </div>
+
+                        <!-- Step 2 -->
+                        <div class="flex items-start group">
+                            <div class="w-16 flex-shrink-0 flex justify-center">
+                                <div class="w-10 h-10 rounded-full bg-white border-[3px] border-blue-500 flex items-center justify-center shadow-sm relative z-10">
+                                    <i class="ph ph-arrow-circle-right text-blue-500"></i>
+                                </div>
+                            </div>
+                            <div class="ml-4 flex-grow bg-blue-50 border border-blue-100 rounded-xl p-4 shadow-sm hover:border-blue-300 transition-colors relative">
+                                <div class="absolute -left-2 top-1/2 -translate-y-1/2 w-2 h-2 bg-blue-500 rounded-full"></div>
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="text-xs font-bold uppercase tracking-wider text-blue-600">Execuție Comandă</span>
+                                    <span class="text-xs text-blue-400">Agent Vânzări</span>
+                                </div>
+                                <p class="text-gray-900 font-medium">Modificare stare. Noul stadiu: <span class="bg-blue-100 text-blue-800 font-bold px-2 py-0.5 rounded text-sm">@ViewBag.AfterFirstCommand</span></p>
+                            </div>
+                        </div>
+
+                        <!-- Step 3 -->
+                        <div class="flex items-start group">
+                            <div class="w-16 flex-shrink-0 flex justify-center">
+                                <div class="w-10 h-10 rounded-full bg-white border-[3px] border-emerald-500 flex items-center justify-center shadow-sm relative z-10">
+                                    <i class="ph ph-check-circle text-emerald-500"></i>
+                                </div>
+                            </div>
+                            <div class="ml-4 flex-grow bg-emerald-50 border border-emerald-100 rounded-xl p-4 shadow-sm hover:border-emerald-300 transition-colors relative">
+                                <div class="absolute -left-2 top-1/2 -translate-y-1/2 w-2 h-2 bg-emerald-500 rounded-full"></div>
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="text-xs font-bold uppercase tracking-wider text-emerald-600">Execuție Comandă</span>
+                                    <span class="text-xs text-emerald-400">Manager Sales</span>
+                                </div>
+                                <p class="text-gray-900 font-medium">Tranzacție finalizată! Noul stadiu: <span class="bg-emerald-200 text-emerald-900 font-bold px-2 py-0.5 rounded text-sm">@ViewBag.AfterSecondCommand</span></p>
+                            </div>
+                        </div>
+
+                        <!-- Step 4 (Undo) -->
+                        <div class="flex items-start group">
+                            <div class="w-16 flex-shrink-0 flex justify-center">
+                                <div class="w-10 h-10 rounded-full bg-white border-[3px] border-amber-500 flex items-center justify-center shadow-sm relative z-10">
+                                    <i class="ph ph-arrow-u-up-left text-amber-500"></i>
+                                </div>
+                            </div>
+                            <div class="ml-4 flex-grow bg-amber-50 border border-amber-200 border-dashed rounded-xl p-4 hover:border-amber-400 transition-colors relative">
+                                <div class="absolute -left-2 top-1/2 -translate-y-1/2 w-2 h-2 bg-amber-500 rounded-full"></div>
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="text-xs font-bold uppercase tracking-wider text-amber-700 bg-amber-200 px-2 rounded-full py-0.5">Rollback (Undo) Apelat</span>
+                                    <span class="text-xs text-amber-500">Supervisor</span>
+                                </div>
+                                <p class="text-gray-900 font-medium">Anulare operatiune "Won". Revenire la starea anterioară: <span class="bg-white border border-amber-200 px-2 py-0.5 rounded text-sm font-medium text-amber-800">@ViewBag.AfterFirstUndo</span></p>
+                            </div>
+                        </div>
+
+                        <!-- Step 5 (Undo) -->
+                        <div class="flex items-start group">
+                            <div class="w-16 flex-shrink-0 flex justify-center">
+                                <div class="w-10 h-10 rounded-full bg-white border-[3px] border-rose-500 flex items-center justify-center shadow-sm relative z-10">
+                                    <i class="ph ph-arrow-u-up-left text-rose-500"></i>
+                                </div>
+                            </div>
+                            <div class="ml-4 flex-grow bg-rose-50 border border-rose-200 border-dashed rounded-xl p-4 hover:border-rose-400 transition-colors relative">
+                                <div class="absolute -left-2 top-1/2 -translate-y-1/2 w-2 h-2 bg-rose-500 rounded-full"></div>
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="text-xs font-bold uppercase tracking-wider text-rose-700 bg-rose-200 px-2 rounded-full py-0.5">Rollback (Undo) Apelat</span>
+                                    <span class="text-xs text-rose-500">Supervisor</span>
+                                </div>
+                                <p class="text-gray-900 font-medium">Anulare avansare. Revenire la starea din fabrică: <span class="bg-white border border-rose-200 px-2 py-0.5 rounded text-sm font-medium text-rose-800">@ViewBag.AfterSecondUndo</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
