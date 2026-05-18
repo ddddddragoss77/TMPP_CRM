@@ -1,83 +1,69 @@
 @{
-    ViewData["Title"] = "Laborator 4 – Paternuri Structurale";
+    ViewData["Title"] = "Plăți & Rezervări";
 }
 
 <div class="mb-8">
-    <h1 class="text-3xl font-bold text-gray-800 mb-2">Laborator 4</h1>
-    <p class="text-gray-500 text-lg">Paternuri de Proiectare Structurale: Adapter, Composite și Façade</p>
+    <h1 class="text-3xl font-bold text-gray-800 mb-2">Plăți, Produse & Rezervări</h1>
+    <p class="text-gray-500 text-lg">Procesează tranzacții, gestionează portofoliul de produse și rezervările clienților.</p>
 </div>
 
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-    <!-- Adapter -->
-    <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-100">
-        <div class="bg-gradient-to-br from-sky-500 to-sky-700 p-6 text-white">
-            <div class="text-4xl mb-3">🔌</div>
-            <h2 class="text-xl font-bold">Adapter Pattern</h2>
-            <p class="text-sky-100 text-sm mt-1">Compatibilitate între interfețe</p>
+    <!-- Adapter -> Terminal Plati -->
+    <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden border border-gray-100 group">
+        <div class="bg-sky-50 p-6 flex flex-col items-center group-hover:bg-sky-100 transition-colors">
+            <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-sky-600 mb-4 shadow-sm">
+                <i class="ph ph-credit-card text-3xl"></i>
+            </div>
+            <h2 class="text-xl font-bold text-gray-900 text-center">Terminal Plăți</h2>
+            <p class="text-sky-600 text-sm mt-1 font-medium">Multi-Gateway</p>
         </div>
         <div class="p-6">
-            <p class="text-gray-600 text-sm mb-4">
-                Integrare uniformă a gateway-urilor de plată <strong>PayPal</strong>, <strong>Stripe</strong>
-                și <strong>Google Pay</strong> prin interfața comună <code>IPaymentGateway</code>.
+            <p class="text-gray-600 text-sm mb-6 text-center">
+                Procesează încasări folosind o interfață unificată, integrând transparent terminale PayPal, Stripe și Google Pay.
             </p>
-            <ul class="text-xs text-gray-500 space-y-1 mb-5">
-                <li>✅ <code>IPaymentGateway</code> – interfață comună</li>
-                <li>✅ 3 Adaptori (PayPal, Stripe, Google Pay)</li>
-                <li>✅ Cod client interschimbabil</li>
-            </ul>
-            <a asp-controller="Lab4" asp-action="Adapter"
-               class="block text-center bg-sky-600 hover:bg-sky-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">
-                Vezi Demo →
+            <a asp-controller="Lab4" asp-action="Adapter" class="block text-center bg-white border border-gray-200 hover:border-sky-500 hover:text-sky-600 text-gray-700 font-semibold py-2.5 px-4 rounded-xl transition duration-200">
+                Deschide Terminalul
             </a>
         </div>
     </div>
 
-    <!-- Composite -->
-    <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-100">
-        <div class="bg-gradient-to-br from-orange-500 to-orange-700 p-6 text-white">
-            <div class="text-4xl mb-3">🌳</div>
-            <h2 class="text-xl font-bold">Composite Pattern</h2>
-            <p class="text-orange-100 text-sm mt-1">Ierarhii tratate uniform</p>
+    <!-- Composite -> Catalog Produse -->
+    <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden border border-gray-100 group">
+        <div class="bg-orange-50 p-6 flex flex-col items-center group-hover:bg-orange-100 transition-colors">
+            <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-orange-600 mb-4 shadow-sm">
+                <i class="ph ph-list-dashes text-3xl"></i>
+            </div>
+            <h2 class="text-xl font-bold text-gray-900 text-center">Catalog Produse</h2>
+            <p class="text-orange-600 text-sm mt-1 font-medium">Structură ierarhică</p>
         </div>
         <div class="p-6">
-            <p class="text-gray-600 text-sm mb-4">
-                Meniu de restaurant cu <strong>produse individuale</strong> și <strong>submeniuri</strong>
-                tratate uniform. Prețul se calculează recursiv prin toată ierarhia.
+            <p class="text-gray-600 text-sm mb-6 text-center">
+                Gestionează portofoliul de produse complexe, pachete și sub-pachete, cu calcul automat al prețurilor pe ierarhie.
             </p>
-            <ul class="text-xs text-gray-500 space-y-1 mb-5">
-                <li>✅ <code>IMenuComponent</code> – interfață comună</li>
-                <li>✅ <code>MenuItem</code> – frunză (produs)</li>
-                <li>✅ <code>MenuGroup</code> – compus (recursiv)</li>
-            </ul>
-            <a asp-controller="Lab4" asp-action="Composite"
-               class="block text-center bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">
-                Vezi Demo →
+            <a asp-controller="Lab4" asp-action="Composite" class="block text-center bg-white border border-gray-200 hover:border-orange-500 hover:text-orange-600 text-gray-700 font-semibold py-2.5 px-4 rounded-xl transition duration-200">
+                Vezi Catalogul
             </a>
         </div>
     </div>
 
-    <!-- Facade -->
-    <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-100">
-        <div class="bg-gradient-to-br from-rose-500 to-rose-700 p-6 text-white">
-            <div class="text-4xl mb-3">🏨</div>
-            <h2 class="text-xl font-bold">Façade Pattern</h2>
-            <p class="text-rose-100 text-sm mt-1">Interfață simplificată</p>
+    <!-- Facade -> Sistem Rezervari -->
+    <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden border border-gray-100 group">
+        <div class="bg-rose-50 p-6 flex flex-col items-center group-hover:bg-rose-100 transition-colors">
+            <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-rose-600 mb-4 shadow-sm">
+                <i class="ph ph-calendar-check text-3xl"></i>
+            </div>
+            <h2 class="text-xl font-bold text-gray-900 text-center">Sistem Rezervări</h2>
+            <p class="text-rose-600 text-sm mt-1 font-medium">Booking Simplificat</p>
         </div>
         <div class="p-6">
-            <p class="text-gray-600 text-sm mb-4">
-                Rezervare hotel prin o singură metodă <code>BookRoom()</code> care orchestrează intern
-                4 subsisteme: căutare, disponibilitate, plată și notificări.
+            <p class="text-gray-600 text-sm mb-6 text-center">
+                Efectuează rezervări printr-un singur formular simplificat care orchestrează automat disponibilitatea, plățile și notificările.
             </p>
-            <ul class="text-xs text-gray-500 space-y-1 mb-5">
-                <li>✅ <code>HotelBookingFacade</code> – interfață simplă</li>
-                <li>✅ 4 subsisteme interne ascunse</li>
-                <li>✅ Demonstrație interactivă</li>
-            </ul>
-            <a asp-controller="Lab4" asp-action="Facade"
-               class="block text-center bg-rose-600 hover:bg-rose-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">
-                Vezi Demo →
+            <a asp-controller="Lab4" asp-action="Facade" class="block text-center bg-white border border-gray-200 hover:border-rose-500 hover:text-rose-600 text-gray-700 font-semibold py-2.5 px-4 rounded-xl transition duration-200">
+                Modul Booking
             </a>
         </div>
     </div>
+
 </div>

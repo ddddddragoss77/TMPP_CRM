@@ -1,0 +1,98 @@
+@model TMPP_CRM.Domain.Entities.Lead
+@{
+    ViewData["Title"] = "Manager Backup Date";
+}
+
+<div class="mb-6 flex items-center justify-between">
+    <div>
+        <h1 class="text-2xl font-bold text-gray-900 flex items-center">
+            <i class="ph ph-floppy-disk text-rose-600 mr-3 text-3xl"></i>
+            Snapshot & Rollback Lead
+        </h1>
+        <p class="text-gray-500 mt-1">Sistem automat de protecție a datelor: salvează snapshot-uri invizibile la editarea entităților.</p>
+    </div>
+</div>
+
+<div class="bg-white border border-gray-100 rounded-xl p-6 mb-8 text-sm text-gray-600 shadow-sm flex items-start gap-4">
+    <i class="ph ph-lifebuoy text-rose-500 text-2xl"></i>
+    <div>
+        <strong class="text-gray-800">Protecție prin "State Capture":</strong>
+        Când un utilizator deschide un Lead pentru editare, platforma creează în memorie un obiect imutabil care stochează valorile inițiale. Dacă sesiunea de editare este anulată, sistemul încarcă datele din acest obiect ascuns, fără să fie necesară re-interogarea bazei de date.
+    </div>
+</div>
+
+<div class="bg-gray-50 rounded-3xl p-8 border border-gray-200 mb-8 relative overflow-hidden">
+    <div class="absolute top-0 right-0 -mt-8 -mr-8 text-gray-200 opacity-50">
+        <i class="ph ph-database text-9xl"></i>
+    </div>
+    
+    <h3 class="text-xl font-bold text-gray-800 mb-6 relative z-10 flex items-center">
+        <i class="ph ph-clock-counter-clockwise mr-2 text-rose-500"></i>
+        Flux de Salvare și Restaurare (#LD-@Model.Id)
+    </h3>
+
+    <div class="grid md:grid-cols-3 gap-6 relative z-10">
+        <!-- State 1 -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden transform transition-all duration-300">
+            <div class="bg-gray-100 border-b border-gray-200 p-4 text-center">
+                <span class="text-xs font-bold text-gray-500 uppercase tracking-widest flex justify-center items-center">
+                    <i class="ph ph-camera mr-1 text-lg"></i> 1. Snapshot Capturat
+                </span>
+            </div>
+            <div class="p-6">
+                <p class="text-xs text-gray-500 mb-2 text-center">Date originale din baza de date:</p>
+                <div class="font-medium text-xs text-gray-700 bg-gray-50 p-4 rounded-xl border border-dashed border-gray-300 text-center break-words shadow-inner">
+                    @ViewBag.InitialState
+                </div>
+            </div>
+            <div class="bg-gray-50 p-3 text-center border-t border-gray-100 text-xs text-gray-400 font-medium">
+                Memory Block: 0x1A4F...
+            </div>
+        </div>
+
+        <!-- State 2 -->
+        <div class="bg-white rounded-2xl shadow-sm border border-blue-100 overflow-hidden transform transition-all duration-300 relative">
+            <div class="absolute -left-3 top-1/2 -translate-y-1/2 text-gray-300 hidden md:block">
+                <i class="ph ph-arrow-right text-2xl"></i>
+            </div>
+            <div class="bg-blue-50 border-b border-blue-100 p-4 text-center">
+                <span class="text-xs font-bold text-blue-600 uppercase tracking-widest flex justify-center items-center">
+                    <i class="ph ph-pencil-simple mr-1 text-lg"></i> 2. Modificări în Sesiune
+                </span>
+            </div>
+            <div class="p-6">
+                <p class="text-xs text-blue-500 mb-2 text-center">Date editate (nesalvate încă):</p>
+                <div class="font-medium text-xs text-blue-800 bg-blue-50/50 p-4 rounded-xl border border-dashed border-blue-300 text-center break-words shadow-inner">
+                    @ViewBag.ModifiedState
+                </div>
+            </div>
+            <div class="bg-blue-50/30 p-3 text-center border-t border-blue-50 text-xs text-blue-400 font-medium flex justify-center space-x-4">
+                <span><i class="ph ph-warning-circle"></i> Unsaved</span>
+            </div>
+        </div>
+
+        <!-- State 3 -->
+        <div class="bg-white rounded-2xl shadow-sm border border-rose-100 overflow-hidden transform transition-all duration-300 relative">
+            <div class="absolute -left-3 top-1/2 -translate-y-1/2 text-blue-200 hidden md:block">
+                <i class="ph ph-arrow-right text-2xl"></i>
+            </div>
+            <div class="bg-rose-50 border-b border-rose-100 p-4 text-center">
+                <span class="text-xs font-bold text-rose-600 uppercase tracking-widest flex justify-center items-center">
+                    <i class="ph ph-arrow-u-up-left mr-1 text-lg"></i> 3. Rollback Executat
+                </span>
+            </div>
+            <div class="p-6">
+                <p class="text-xs text-rose-500 mb-2 text-center">Date restaurate din snapshot:</p>
+                <div class="font-medium text-xs text-rose-800 bg-rose-50 p-4 rounded-xl border border-dashed border-rose-300 text-center break-words shadow-inner relative">
+                    <div class="absolute -top-2 -right-2 w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center text-white text-xs border-2 border-white shadow-sm">
+                        <i class="ph ph-check"></i>
+                    </div>
+                    @ViewBag.RestoredState
+                </div>
+            </div>
+            <div class="bg-rose-50 p-3 text-center border-t border-rose-100 text-xs text-rose-400 font-medium">
+                Source: Memory Block 0x1A4F...
+            </div>
+        </div>
+    </div>
+</div>

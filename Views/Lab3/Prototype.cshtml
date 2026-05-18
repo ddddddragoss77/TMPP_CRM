@@ -1,141 +1,156 @@
 @model TMPP_CRM.Controllers.PrototypeViewModel
 @{
-    ViewData["Title"] = "Prototype Pattern – Clonare Raport";
+    ViewData["Title"] = "Manager Șabloane Rapoarte";
 }
 
-<div class="mb-6">
-    <a asp-controller="Lab3" asp-action="Index" class="text-emerald-500 hover:underline text-sm">← Laborator 3</a>
-    <h1 class="text-3xl font-bold text-gray-800 mt-2">🧬 Prototype Pattern</h1>
-    <p class="text-gray-500 mt-1">Clonarea șabloanelor de raport CRM – Shallow Copy vs Deep Copy</p>
+<div class="mb-6 flex items-center justify-between">
+    <div>
+        <h1 class="text-2xl font-bold text-gray-900 flex items-center">
+            <i class="ph ph-copy text-emerald-600 mr-3 text-3xl"></i>
+            Șabloane Rapoarte CRM
+        </h1>
+        <p class="text-gray-500 mt-1">Gestionează și multiplică șabloanele de documente fără a afecta originalul.</p>
+    </div>
 </div>
 
 <!-- Explicatie -->
-<div class="bg-emerald-50 border border-emerald-200 rounded-xl p-5 mb-8 text-sm text-emerald-800">
-    <strong>Demonstrație:</strong> Am modificat <code>Sections[0].Content</code> pe <strong>Shallow Copy</strong>.
-    Observă că originalul este și el afectat (referință partajată), dar <strong>Deep Copy</strong> rămâne neafectat.
+<div class="bg-white border border-gray-100 rounded-xl p-6 mb-8 text-sm text-gray-600 shadow-sm">
+    <strong>Sistem de Versionare:</strong> La duplicarea unui șablon, sistemul folosește duplicarea în profunzime (Deep Copy) pentru a asigura că documentul nou este 100% independent. Orice modificare adusă clonei nu va afecta niciodată șablonul original.
 </div>
 
-<!-- Alerta shallow -->
-<div class="bg-red-50 border border-red-300 rounded-xl p-4 mb-6 flex gap-3 items-start">
-    <span class="text-red-500 text-xl">⚠️</span>
+<!-- Alerta shallow (re-purposed ca alerta de audit) -->
+<div class="bg-blue-50 border border-blue-100 rounded-xl p-4 mb-6 flex gap-3 items-start">
+    <i class="ph ph-info text-blue-500 text-xl"></i>
     <div class="text-sm">
-        <strong class="text-red-700">Efect Shallow Copy detectat!</strong><br/>
-        <span class="text-red-600">Original <code>Sections[0].Content</code> = "<em>@Model.OriginalSection0Content</em>"</span><br/>
-        <span class="text-gray-500">A fost modificat indirect prin Shallow Copy (referință partajată la lista de secțiuni).</span>
+        <strong class="text-blue-900">Jurnal Audit Modificări</strong><br/>
+        <span class="text-blue-700">Conținut original: "<em>@Model.OriginalSection0Content</em>"</span><br/>
+        <span class="text-blue-600 opacity-80">Orice modificare ulterioară este urmărită și versionată izolat.</span>
     </div>
 </div>
 
 <!-- Grid comparatie -->
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
     <!-- Original -->
-    <div class="bg-white rounded-2xl shadow border border-gray-200 overflow-hidden">
-        <div class="bg-gray-700 text-white p-4">
-            <p class="text-xs text-gray-300 uppercase tracking-widest">Original</p>
-            <h2 class="font-bold text-lg truncate">@Model.Original.Title</h2>
-            <p class="text-gray-300 text-xs mt-1">ID: @Model.Original.Id.ToString()[..8]…</p>
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden relative">
+        <div class="absolute top-4 right-4">
+            <span class="bg-gray-100 text-gray-600 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest">Șablon Master</span>
         </div>
-        <div class="p-4 space-y-3">
-            <div class="text-xs text-gray-500">Autor: <span class="font-medium text-gray-700">@Model.Original.Author</span></div>
-            <div class="text-xs text-gray-500">Creat: <span class="font-medium text-gray-700">@Model.Original.CreatedAt.ToString("HH:mm:ss")</span></div>
-            <hr/>
-            <p class="text-xs font-semibold text-gray-400 uppercase">Secțiuni (@Model.Original.Sections.Count)</p>
-            @foreach (var s in Model.Original.Sections)
-            {
-                <div class="bg-gray-50 rounded-lg p-2 text-xs">
-                    <p class="font-semibold text-gray-700">@s.Title</p>
-                    <p class="text-gray-500 @(s.Content.Contains("MODIFICAT") ? "text-red-500 font-bold" : "")">@s.Content</p>
+        <div class="bg-gray-50 border-b border-gray-100 p-6 pt-12">
+            <h2 class="font-bold text-xl text-gray-900 truncate">@Model.Original.Title</h2>
+            <p class="text-gray-400 text-sm mt-1 font-mono">ID Referință: @Model.Original.Id.ToString()[..8]…</p>
+        </div>
+        <div class="p-6 space-y-4">
+            <div class="grid grid-cols-2 gap-4 bg-white border border-gray-100 rounded-xl p-4">
+                <div>
+                    <span class="text-xs text-gray-500 block uppercase tracking-wider mb-1">Autor Creator</span>
+                    <span class="font-medium text-gray-900">@Model.Original.Author</span>
                 </div>
-            }
-            <hr/>
-            <p class="text-xs font-semibold text-gray-400 uppercase">Formatare</p>
-            @foreach (var kv in Model.Original.FormattingSettings)
-            {
-                <div class="flex justify-between text-xs">
-                    <span class="text-gray-500">@kv.Key</span>
-                    <span class="text-gray-700 font-medium">@kv.Value</span>
+                <div>
+                    <span class="text-xs text-gray-500 block uppercase tracking-wider mb-1">Data Creării</span>
+                    <span class="font-medium text-gray-900">@Model.Original.CreatedAt.ToString("HH:mm:ss")</span>
                 </div>
-            }
-        </div>
-    </div>
-
-    <!-- Shallow Copy -->
-    <div class="bg-white rounded-2xl shadow border-2 border-red-300 overflow-hidden">
-        <div class="bg-red-500 text-white p-4">
-            <p class="text-xs text-red-100 uppercase tracking-widest">Shallow Copy ⚠️</p>
-            <h2 class="font-bold text-lg truncate">@Model.ShallowCopy.Title</h2>
-            <p class="text-red-100 text-xs mt-1">ID: @Model.ShallowCopy.Id.ToString()[..8]…</p>
-        </div>
-        <div class="p-4 space-y-3">
-            <div class="text-xs text-gray-500">Autor: <span class="font-medium text-gray-700">@Model.ShallowCopy.Author</span></div>
-            <div class="text-xs text-gray-500">Creat: <span class="font-medium text-gray-700">@Model.ShallowCopy.CreatedAt.ToString("HH:mm:ss")</span></div>
-            <div class="bg-red-50 border border-red-200 rounded p-2 text-xs text-red-700">
-                ⚠️ Lista de secțiuni este <strong>aceeași referință</strong> ca originalul!
             </div>
-            <hr/>
-            <p class="text-xs font-semibold text-gray-400 uppercase">Secțiuni (partajate!)</p>
-            @foreach (var s in Model.ShallowCopy.Sections)
-            {
-                <div class="bg-red-50 rounded-lg p-2 text-xs border border-red-100">
-                    <p class="font-semibold text-gray-700">@s.Title</p>
-                    <p class="@(s.Content.Contains("MODIFICAT") ? "text-red-600 font-bold" : "text-gray-500")">@s.Content</p>
+            
+            <div>
+                <p class="text-xs font-bold text-gray-900 uppercase tracking-widest mb-3 flex items-center">
+                    <i class="ph ph-list-dashes mr-2 text-gray-400"></i> Secțiuni Actuale (@Model.Original.Sections.Count)
+                </p>
+                <div class="space-y-2">
+                    @foreach (var s in Model.Original.Sections)
+                    {
+                        <div class="bg-gray-50 rounded-lg p-3 text-sm border border-gray-100">
+                            <p class="font-semibold text-gray-800 mb-1">@s.Title</p>
+                            <p class="text-gray-500 @(s.Content.Contains("MODIFICAT") ? "text-red-500 font-bold" : "")">@s.Content</p>
+                        </div>
+                    }
                 </div>
-            }
-        </div>
-    </div>
-
-    <!-- Deep Copy -->
-    <div class="bg-white rounded-2xl shadow border-2 border-emerald-300 overflow-hidden">
-        <div class="bg-emerald-600 text-white p-4">
-            <p class="text-xs text-emerald-100 uppercase tracking-widest">Deep Copy ✅</p>
-            <h2 class="font-bold text-lg truncate">@Model.DeepCopy.Title</h2>
-            <p class="text-emerald-100 text-xs mt-1">ID: @Model.DeepCopy.Id.ToString()[..8]…</p>
-        </div>
-        <div class="p-4 space-y-3">
-            <div class="text-xs text-gray-500">Autor: <span class="font-medium text-gray-700">@Model.DeepCopy.Author</span></div>
-            <div class="text-xs text-gray-500">Creat: <span class="font-medium text-gray-700">@Model.DeepCopy.CreatedAt.ToString("HH:mm:ss")</span></div>
-            <div class="bg-emerald-50 border border-emerald-200 rounded p-2 text-xs text-emerald-700">
-                ✅ Complet independent – modificările nu afectează originalul!
             </div>
-            <hr/>
-            <p class="text-xs font-semibold text-gray-400 uppercase">Secțiuni (copiate)</p>
-            @foreach (var s in Model.DeepCopy.Sections)
-            {
-                <div class="bg-emerald-50 rounded-lg p-2 text-xs border border-emerald-100">
-                    <p class="font-semibold text-gray-700">@s.Title</p>
-                    <p class="text-gray-500">@s.Content</p>
+            
+            <div>
+                <p class="text-xs font-bold text-gray-900 uppercase tracking-widest mb-3 mt-6 flex items-center">
+                    <i class="ph ph-palette mr-2 text-gray-400"></i> Formatare Aplicată
+                </p>
+                <div class="bg-gray-50 rounded-lg p-3 space-y-2 border border-gray-100">
+                    @foreach (var kv in Model.Original.FormattingSettings)
+                    {
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-500">@kv.Key</span>
+                            <span class="text-gray-900 font-medium">@kv.Value</span>
+                        </div>
+                    }
                 </div>
-            }
-            <hr/>
-            <p class="text-xs font-semibold text-gray-400 uppercase">Formatare (copiată)</p>
-            @foreach (var kv in Model.DeepCopy.FormattingSettings)
-            {
-                <div class="flex justify-between text-xs">
-                    <span class="text-gray-500">@kv.Key</span>
-                    <span class="text-gray-700 font-medium">@kv.Value</span>
-                </div>
-            }
+            </div>
         </div>
     </div>
 
-</div>
+    <!-- Deep Copy (Draft nou) -->
+    <div class="bg-white rounded-2xl shadow-md border-2 border-emerald-500 overflow-hidden relative">
+        <div class="absolute top-4 right-4">
+            <span class="bg-emerald-100 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest flex items-center">
+                <i class="ph ph-check-circle mr-1"></i> Draft Nou
+            </span>
+        </div>
+        <div class="bg-emerald-50/50 border-b border-emerald-100 p-6 pt-12">
+            <h2 class="font-bold text-xl text-emerald-900 truncate">@Model.DeepCopy.Title</h2>
+            <p class="text-emerald-600/70 text-sm mt-1 font-mono">ID Generat: @Model.DeepCopy.Id.ToString()[..8]…</p>
+        </div>
+        <div class="p-6 space-y-4">
+            <div class="grid grid-cols-2 gap-4 bg-white border border-emerald-100 rounded-xl p-4">
+                <div>
+                    <span class="text-xs text-emerald-600/70 block uppercase tracking-wider mb-1">Autor Modificare</span>
+                    <span class="font-medium text-emerald-900">@Model.DeepCopy.Author</span>
+                </div>
+                <div>
+                    <span class="text-xs text-emerald-600/70 block uppercase tracking-wider mb-1">Data Duplicării</span>
+                    <span class="font-medium text-emerald-900">@Model.DeepCopy.CreatedAt.ToString("HH:mm:ss")</span>
+                </div>
+            </div>
+            
+            <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-3 text-sm text-emerald-700 flex items-center">
+                <i class="ph ph-shield-check text-xl mr-3"></i>
+                <div>
+                    Documentul este complet decuplat de Master. Editările sunt în siguranță.
+                </div>
+            </div>
 
-<!-- Tabel comparatie -->
-<div class="mt-8 bg-white rounded-xl shadow border border-gray-100 overflow-hidden">
-    <table class="w-full text-sm">
-        <thead class="bg-gray-50 text-gray-500 uppercase text-xs">
-            <tr>
-                <th class="px-6 py-3 text-left">Aspect</th>
-                <th class="px-6 py-3 text-center">Shallow Copy</th>
-                <th class="px-6 py-3 text-center">Deep Copy</th>
-            </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-100">
-            <tr><td class="px-6 py-3 text-gray-600">Obiect nou creat</td><td class="px-6 py-3 text-center text-green-600 font-bold">✅ Da</td><td class="px-6 py-3 text-center text-green-600 font-bold">✅ Da</td></tr>
-            <tr><td class="px-6 py-3 text-gray-600">ID nou</td><td class="px-6 py-3 text-center text-green-600 font-bold">✅ Da</td><td class="px-6 py-3 text-center text-green-600 font-bold">✅ Da</td></tr>
-            <tr><td class="px-6 py-3 text-gray-600">Lista Sections independentă</td><td class="px-6 py-3 text-center text-red-500 font-bold">❌ Nu</td><td class="px-6 py-3 text-center text-green-600 font-bold">✅ Da</td></tr>
-            <tr><td class="px-6 py-3 text-gray-600">FormattingSettings independent</td><td class="px-6 py-3 text-center text-red-500 font-bold">❌ Nu</td><td class="px-6 py-3 text-center text-green-600 font-bold">✅ Da</td></tr>
-            <tr><td class="px-6 py-3 text-gray-600">Modificările nu afectează originalul</td><td class="px-6 py-3 text-center text-red-500 font-bold">❌ Nu</td><td class="px-6 py-3 text-center text-green-600 font-bold">✅ Da</td></tr>
-        </tbody>
-    </table>
+            <div>
+                <p class="text-xs font-bold text-emerald-900 uppercase tracking-widest mb-3 flex items-center">
+                    <i class="ph ph-list-dashes mr-2 text-emerald-500/50"></i> Secțiuni Editabile
+                </p>
+                <div class="space-y-2">
+                    @foreach (var s in Model.DeepCopy.Sections)
+                    {
+                        <div class="bg-white rounded-lg p-3 text-sm border border-emerald-100 shadow-sm">
+                            <p class="font-semibold text-gray-800 mb-1">@s.Title</p>
+                            <p class="text-gray-500">@s.Content</p>
+                        </div>
+                    }
+                </div>
+            </div>
+            
+            <div>
+                <p class="text-xs font-bold text-emerald-900 uppercase tracking-widest mb-3 mt-6 flex items-center">
+                    <i class="ph ph-palette mr-2 text-emerald-500/50"></i> Formatare Moștenită
+                </p>
+                <div class="bg-white rounded-lg p-3 space-y-2 border border-emerald-100 shadow-sm">
+                    @foreach (var kv in Model.DeepCopy.FormattingSettings)
+                    {
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-500">@kv.Key</span>
+                            <span class="text-gray-900 font-medium">@kv.Value</span>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="bg-gray-50 p-4 border-t border-gray-100 flex justify-end gap-3">
+            <button class="bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 px-4 py-2 rounded-lg font-medium transition-colors text-sm">
+                Anulează
+            </button>
+            <button class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-sm text-sm">
+                Salvează Modificările
+            </button>
+        </div>
+    </div>
 </div>

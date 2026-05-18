@@ -1,0 +1,87 @@
+@model TMPP_CRM.Domain.Entities.Deal
+@{
+    ViewData["Title"] = "Notificări Live";
+}
+
+<div class="mb-6 flex items-center justify-between">
+    <div>
+        <h1 class="text-2xl font-bold text-gray-900 flex items-center">
+            <i class="ph ph-broadcast text-indigo-600 mr-3 text-3xl"></i>
+            Event Bus & Alerte Live
+        </h1>
+        <p class="text-gray-500 mt-1">Subsistemele se abonează automat pentru a reacționa la schimbările de stare ale obiectelor cheie.</p>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <div class="lg:col-span-4">
+        <!-- Panou Subiect Monitorizat -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sticky top-6">
+            <div class="flex items-center space-x-3 mb-6 pb-4 border-b border-gray-100">
+                <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center text-xl">
+                    <i class="ph ph-target"></i>
+                </div>
+                <div>
+                    <span class="block text-xs uppercase tracking-widest font-bold text-gray-400">Entitate Monitorizată</span>
+                    <strong class="text-gray-800 text-lg">@Model.Title</strong>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-xs uppercase font-bold tracking-wider text-gray-500 mb-2">Stare Curentă (Trigger):</label>
+                <div class="bg-indigo-600 text-white font-bold text-center py-3 rounded-xl shadow-md shadow-indigo-600/20 flex items-center justify-center">
+                    <span class="relative flex h-3 w-3 mr-3">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
+                    </span>
+                    @Model.Stage
+                </div>
+            </div>
+
+            <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-4 text-xs text-indigo-800">
+                <i class="ph ph-info font-bold text-lg mb-2 block text-indigo-600"></i>
+                Când starea Deal-ului se modifică, entitatea trimite un eveniment (broadcast). Modulele externe "ascultă" acest eveniment și execută proceduri independente (ex: trimitere email, logare acțiune).
+            </div>
+        </div>
+    </div>
+
+    <div class="lg:col-span-8">
+        <h3 class="font-bold text-gray-800 flex items-center mb-6">
+            <i class="ph ph-activity mr-2 text-indigo-500"></i> Log Reacții Abonați (Subscribers)
+        </h3>
+
+        <div class="space-y-6">
+            <!-- Event 1 -->
+            <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                <div class="bg-gray-50 border-b border-gray-200 px-4 py-3 flex justify-between items-center">
+                    <div class="flex items-center text-sm font-bold text-gray-700">
+                        <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center mr-2 text-xs">1</span>
+                        Event: Stare modificată în "Negotiation"
+                    </div>
+                    <span class="text-xs  text-gray-500"><i class="ph ph-clock"></i> 2 subscribers fired</span>
+                </div>
+                <div class="p-6">
+                    <div class=" text-sm bg-blue-50 text-blue-800 font-medium p-4 rounded-xl leading-relaxed whitespace-pre-wrap">@ViewBag.Log1</div>
+                </div>
+            </div>
+
+            <!-- Event 2 -->
+            <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow relative">
+                <div class="absolute left-6 -top-6 w-0.5 h-6 bg-gray-200"></div> <!-- Connector line -->
+                <div class="bg-gray-50 border-b border-gray-200 px-4 py-3 flex justify-between items-center">
+                    <div class="flex items-center text-sm font-bold text-gray-700">
+                        <span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mr-2 text-xs">2</span>
+                        Event: Stare modificată în "Won"
+                    </div>
+                    <span class="text-xs  text-gray-500"><i class="ph ph-clock"></i> 2 subscribers fired</span>
+                </div>
+                <div class="p-6">
+                    <div class=" text-sm bg-blue-50 text-blue-800 font-medium p-4 rounded-xl leading-relaxed whitespace-pre-wrap border border-emerald-500/30 relative">
+                        <div class="absolute top-2 right-2 text-emerald-500 opacity-50"><i class="ph ph-check-circle text-2xl"></i></div>
+                        @ViewBag.Log2
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

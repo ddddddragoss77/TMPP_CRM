@@ -1,16 +1,157 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@{
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="text-center py-16">
-    <h1 class="text-5xl font-extrabold text-gray-900 tracking-tight sm:text-6xl mb-6">Welcome</h1>
-    <p class="text-xl text-gray-500 max-w-2xl mx-auto">
-        Learn about <a href="https://learn.microsoft.com/aspnet/core" class="text-blue-600 hover:text-blue-800 underline">building Web apps with ASP.NET Core</a>.
-    </p>
+<div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900">Dashboard Overivew</h1>
+    <p class="text-gray-500 mt-1">Bun venit în Nexus CRM. Aici este rezumatul activității tale.</p>
+</div>
+
+<!-- Stats Widgets -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center">
+        <div class="w-14 h-14 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
+            <i class="ph ph-users text-2xl"></i>
+        </div>
+        <div class="ml-4">
+            <h3 class="text-gray-500 text-sm font-medium">Total Lead-uri</h3>
+            <p class="text-2xl font-bold text-gray-900">1,248</p>
+            <p class="text-sm text-green-500 font-medium flex items-center mt-1">
+                <i class="ph ph-arrow-up-right mr-1"></i> 12% luna aceasta
+            </p>
+        </div>
+    </div>
     
-    <div class="mt-10">
-        <a href="/Lab2" class="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 md:py-4 md:text-lg md:px-10 shadow-lg">
-            Vezi Laborator 2
-        </a>
+    <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center">
+        <div class="w-14 h-14 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600">
+            <i class="ph ph-briefcase text-2xl"></i>
+        </div>
+        <div class="ml-4">
+            <h3 class="text-gray-500 text-sm font-medium">Deal-uri Active</h3>
+            <p class="text-2xl font-bold text-gray-900">84</p>
+            <p class="text-sm text-green-500 font-medium flex items-center mt-1">
+                <i class="ph ph-arrow-up-right mr-1"></i> 5% luna aceasta
+            </p>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center">
+        <div class="w-14 h-14 rounded-full bg-green-50 flex items-center justify-center text-green-600">
+            <i class="ph ph-currency-dollar text-2xl"></i>
+        </div>
+        <div class="ml-4">
+            <h3 class="text-gray-500 text-sm font-medium">Venituri (Luna)</h3>
+            <p class="text-2xl font-bold text-gray-900">$45,200</p>
+            <p class="text-sm text-green-500 font-medium flex items-center mt-1">
+                <i class="ph ph-arrow-up-right mr-1"></i> 18% luna aceasta
+            </p>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center">
+        <div class="w-14 h-14 rounded-full bg-orange-50 flex items-center justify-center text-orange-600">
+            <i class="ph ph-chart-line-up text-2xl"></i>
+        </div>
+        <div class="ml-4">
+            <h3 class="text-gray-500 text-sm font-medium">Rată Conversie</h3>
+            <p class="text-2xl font-bold text-gray-900">24.5%</p>
+            <p class="text-sm text-red-500 font-medium flex items-center mt-1">
+                <i class="ph ph-arrow-down-right mr-1"></i> 2% luna aceasta
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Main Sections -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Quick Actions -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+        <h2 class="text-lg font-bold text-gray-900 mb-4">Acțiuni Rapide</h2>
+        <div class="space-y-3">
+            <a asp-controller="Lab3" asp-action="Builder" class="flex items-center p-3 rounded-xl border border-gray-100 hover:border-primary-500 hover:bg-primary-50 transition-all group">
+                <div class="w-10 h-10 rounded-lg bg-gray-50 group-hover:bg-primary-100 flex items-center justify-center text-gray-500 group-hover:text-primary-600 transition-colors">
+                    <i class="ph ph-file-plus text-xl"></i>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm font-semibold text-gray-900 group-hover:text-primary-700">Generează Ofertă</p>
+                    <p class="text-xs text-gray-500">Creează o nouă ofertă comercială</p>
+                </div>
+            </a>
+            
+            <a asp-controller="Lab4" asp-action="Adapter" class="flex items-center p-3 rounded-xl border border-gray-100 hover:border-indigo-500 hover:bg-indigo-50 transition-all group">
+                <div class="w-10 h-10 rounded-lg bg-gray-50 group-hover:bg-indigo-100 flex items-center justify-center text-gray-500 group-hover:text-indigo-600 transition-colors">
+                    <i class="ph ph-credit-card text-xl"></i>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm font-semibold text-gray-900 group-hover:text-indigo-700">Procesare Plată</p>
+                    <p class="text-xs text-gray-500">Încasează facturi via PayPal/Stripe</p>
+                </div>
+            </a>
+
+            <a asp-controller="Lab2" asp-action="FactoryMethod" class="flex items-center p-3 rounded-xl border border-gray-100 hover:border-green-500 hover:bg-green-50 transition-all group">
+                <div class="w-10 h-10 rounded-lg bg-gray-50 group-hover:bg-green-100 flex items-center justify-center text-gray-500 group-hover:text-green-600 transition-colors">
+                    <i class="ph ph-phone-call text-xl"></i>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm font-semibold text-gray-900 group-hover:text-green-700">Adaugă Activitate</p>
+                    <p class="text-xs text-gray-500">Loghează un call sau un meeting</p>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Recent Deals -->
+    <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-lg font-bold text-gray-900">Pipeline Deal-uri (Recente)</h2>
+            <a asp-controller="Lab6" asp-action="Iterator" class="text-sm font-medium text-primary-600 hover:text-primary-700">Vezi toate</a>
+        </div>
+        
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr>
+                        <th class="py-3 px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-100">Deal</th>
+                        <th class="py-3 px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-100">Client</th>
+                        <th class="py-3 px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-100">Valoare</th>
+                        <th class="py-3 px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-100">Status</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm divide-y divide-gray-50">
+                    <tr class="hover:bg-gray-50/50 transition-colors">
+                        <td class="py-3 px-4 font-medium text-gray-900">Implementare ERP Enterprise</td>
+                        <td class="py-3 px-4 text-gray-600">TechCorp S.A.</td>
+                        <td class="py-3 px-4 text-gray-900 font-semibold">$12,500</td>
+                        <td class="py-3 px-4">
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">În negociere</span>
+                        </td>
+                    </tr>
+                    <tr class="hover:bg-gray-50/50 transition-colors">
+                        <td class="py-3 px-4 font-medium text-gray-900">Migrare Cloud AWS</td>
+                        <td class="py-3 px-4 text-gray-600">StartUp Hub</td>
+                        <td class="py-3 px-4 text-gray-900 font-semibold">$8,200</td>
+                        <td class="py-3 px-4">
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">Propunere Trimisă</span>
+                        </td>
+                    </tr>
+                    <tr class="hover:bg-gray-50/50 transition-colors">
+                        <td class="py-3 px-4 font-medium text-gray-900">Audit de Securitate</td>
+                        <td class="py-3 px-4 text-gray-600">Banca Națională</td>
+                        <td class="py-3 px-4 text-gray-900 font-semibold">$24,000</td>
+                        <td class="py-3 px-4">
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Câștigat</span>
+                        </td>
+                    </tr>
+                    <tr class="hover:bg-gray-50/50 transition-colors">
+                        <td class="py-3 px-4 font-medium text-gray-900">Abonament Mentenanță IT</td>
+                        <td class="py-3 px-4 text-gray-600">Retail Group</td>
+                        <td class="py-3 px-4 text-gray-900 font-semibold">$1,200/luna</td>
+                        <td class="py-3 px-4">
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">Contact Inițial</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>

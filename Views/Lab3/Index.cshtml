@@ -1,84 +1,67 @@
 @{
-    ViewData["Title"] = "Laborator 3 – Paternuri Creționale";
+    ViewData["Title"] = "Vânzări și Configurare";
 }
 
 <div class="mb-8">
-    <h1 class="text-3xl font-bold text-gray-800 mb-2">Laborator 3</h1>
-    <p class="text-gray-500 text-lg">Paternuri de Proiectare Creționale: Builder, Prototype și Singleton</p>
+    <h1 class="text-3xl font-bold text-gray-800 mb-2">Oferte & Vânzări</h1>
+    <p class="text-gray-500 text-lg">Gestionează ofertele comerciale, șabloanele și setările sistemului.</p>
 </div>
 
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-    <!-- Builder -->
-    <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-100">
-        <div class="bg-gradient-to-br from-blue-500 to-blue-700 p-6 text-white">
-            <div class="text-4xl mb-3">🔨</div>
-            <h2 class="text-xl font-bold">Builder Pattern</h2>
-            <p class="text-blue-100 text-sm mt-1">Construcție pas cu pas</p>
+    <!-- Builder -> Generator Oferte -->
+    <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden border border-gray-100 group">
+        <div class="bg-blue-50 p-6 flex flex-col items-center group-hover:bg-blue-100 transition-colors">
+            <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-blue-600 mb-4 shadow-sm">
+                <i class="ph ph-receipt text-3xl"></i>
+            </div>
+            <h2 class="text-xl font-bold text-gray-900 text-center">Generator Oferte</h2>
+            <p class="text-blue-600 text-sm mt-1 font-medium">Standard / Premium / Custom</p>
         </div>
         <div class="p-6">
-            <p class="text-gray-600 text-sm mb-4">
-                Crearea de <strong>Oferte Comerciale CRM</strong> (Standard / Premium / Custom)
-                folosind un builder cu fluent API și un Director care gestionează pașii.
+            <p class="text-gray-600 text-sm mb-6 text-center">
+                Configurează pas cu pas oferte comerciale complexe pentru clienții tăi, adăugând discount-uri și valabilitate.
             </p>
-            <ul class="text-xs text-gray-500 space-y-1 mb-5">
-                <li>✅ <code>IOfferBuilder</code> – interfață fluent</li>
-                <li>✅ <code>OfferBuilder</code> – build + auto-reset</li>
-                <li>✅ <code>OfferDirector</code> – Standard / Premium</li>
-            </ul>
-            <a asp-controller="Lab3" asp-action="Builder"
-               class="block text-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">
-                Vezi Demo →
+            <a asp-controller="Lab3" asp-action="Builder" class="block text-center bg-white border border-gray-200 hover:border-blue-500 hover:text-blue-600 text-gray-700 font-semibold py-2.5 px-4 rounded-xl transition duration-200">
+                Lansează Generatorul
             </a>
         </div>
     </div>
 
-    <!-- Prototype -->
-    <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-100">
-        <div class="bg-gradient-to-br from-emerald-500 to-emerald-700 p-6 text-white">
-            <div class="text-4xl mb-3">🧬</div>
-            <h2 class="text-xl font-bold">Prototype Pattern</h2>
-            <p class="text-emerald-100 text-sm mt-1">Clonare shallow & deep</p>
+    <!-- Prototype -> Manager Sabloane -->
+    <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden border border-gray-100 group">
+        <div class="bg-emerald-50 p-6 flex flex-col items-center group-hover:bg-emerald-100 transition-colors">
+            <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-emerald-600 mb-4 shadow-sm">
+                <i class="ph ph-copy text-3xl"></i>
+            </div>
+            <h2 class="text-xl font-bold text-gray-900 text-center">Șabloane Rapoarte</h2>
+            <p class="text-emerald-600 text-sm mt-1 font-medium">Duplicare inteligentă</p>
         </div>
         <div class="p-6">
-            <p class="text-gray-600 text-sm mb-4">
-                Duplicarea <strong>Șabloanelor de Raport CRM</strong> cu demonstrarea diferenței
-                між shallow copy (referințe partajate) și deep copy (obiect complet independent).
+            <p class="text-gray-600 text-sm mb-6 text-center">
+                Creează documente noi bazate pe șabloane existente fără a suprascrie configurațiile originale ale rapoartelor.
             </p>
-            <ul class="text-xs text-gray-500 space-y-1 mb-5">
-                <li>✅ <code>IPrototype&lt;T&gt;</code> – interfață generică</li>
-                <li>✅ <code>ShallowCopy()</code> – MemberwiseClone</li>
-                <li>✅ <code>DeepCopy()</code> – copie independentă</li>
-            </ul>
-            <a asp-controller="Lab3" asp-action="Prototype"
-               class="block text-center bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">
-                Vezi Demo →
+            <a asp-controller="Lab3" asp-action="Prototype" class="block text-center bg-white border border-gray-200 hover:border-emerald-500 hover:text-emerald-600 text-gray-700 font-semibold py-2.5 px-4 rounded-xl transition duration-200">
+                Deschide Șabloanele
             </a>
         </div>
     </div>
 
-    <!-- Singleton -->
-    <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-100">
-        <div class="bg-gradient-to-br from-violet-500 to-violet-700 p-6 text-white">
-            <div class="text-4xl mb-3">🔒</div>
-            <h2 class="text-xl font-bold">Singleton Pattern</h2>
-            <p class="text-violet-100 text-sm mt-1">O singură instanță globală</p>
+    <!-- Singleton -> Setari Sistem -->
+    <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden border border-gray-100 group">
+        <div class="bg-violet-50 p-6 flex flex-col items-center group-hover:bg-violet-100 transition-colors">
+            <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-violet-600 mb-4 shadow-sm">
+                <i class="ph ph-hard-drives text-3xl"></i>
+            </div>
+            <h2 class="text-xl font-bold text-gray-900 text-center">Status Conexiune</h2>
+            <p class="text-violet-600 text-sm mt-1 font-medium">Baza de Date & Infrastructură</p>
         </div>
         <div class="p-6">
-            <p class="text-gray-600 text-sm mb-4">
-                <strong>DatabaseConnectionManager</strong> – conexiune unică reutilizată de
-                toate modulele CRM, thread-safe prin <code>Lazy&lt;T&gt;</code>.
+            <p class="text-gray-600 text-sm mb-6 text-center">
+                Verifică starea și latența conexiunii unice globale la baza de date centrală a ecosistemului Nexus CRM.
             </p>
-            <ul class="text-xs text-gray-500 space-y-1 mb-5">
-                <li>✅ Constructor privat</li>
-                <li>✅ <code>Lazy&lt;T&gt;</code> thread-safe</li>
-                <li>✅ Demonstrație HashCode identic</li>
-            </ul>
-            <a asp-controller="Lab3" asp-action="Singleton"
-               class="block text-center bg-violet-600 hover:bg-violet-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">
-                Vezi Demo →
+            <a asp-controller="Lab3" asp-action="Singleton" class="block text-center bg-white border border-gray-200 hover:border-violet-500 hover:text-violet-600 text-gray-700 font-semibold py-2.5 px-4 rounded-xl transition duration-200">
+                Verifică Infrastructura
             </a>
         </div>
     </div>
-
 </div>
