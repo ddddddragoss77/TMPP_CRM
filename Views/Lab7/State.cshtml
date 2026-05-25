@@ -1,0 +1,155 @@
+@model TMPP_CRM.Controllers.StateViewModel
+@{
+    ViewData["Title"] = "Automat Bilete — State Pattern";
+    var states = new[] {
+        ("Așteptare Monede",  "ph-coins",        "blue",    "Automatul așteaptă inserarea monedelor sau cardului."),
+        ("Validare Plată",    "ph-shield-check", "amber",   "Procesarea plății prin terminalul bancar."),
+        ("Emitere Bilet",     "ph-ticket",       "emerald", "Imprimarea și eliberarea biletului electronic."),
+        ("Bilet Emis",        "ph-check-circle", "green",   "Tranzacție completă. Automatul pregătit pentru o nouă sesiune."),
+    };
+    var currentIdx = Model.StepsCompleted;
+}
+
+<div class="mb-6">
+    <a asp-controller="Lab7" asp-action="Index" class="text-gray-400 hover:text-gray-600 text-sm flex items-center mb-3">
+        <i class="ph ph-arrow-left mr-1"></i> Înapoi la Lab 7
+    </a>
+    <h1 class="text-2xl font-bold text-gray-900 flex items-center">
+        <i class="ph ph-ticket text-blue-500 mr-3 text-3xl"></i>
+        Automat de Bilete Feroviare
+    </h1>
+    <p class="text-gray-500 mt-1">Obiectul schimbă comportamentul în funcție de starea sa internă — fiecare stare implementează o logică distinctă.</p>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+    <!-- Stepper -->
+    <div class="lg:col-span-2">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
+            <h4 class="font-bold text-gray-700 mb-5 flex items-center"><i class="ph ph-steps mr-2 text-blue-400"></i> Mașina de Stări</h4>
+
+            @for (int i = 0; i < states.Length; i++)
+            {
+                var (name, icon, color, desc) = states[i];
+                var isActive  = i == currentIdx;
+                var isDone    = i < currentIdx;
+                var bgClass   = isDone ? "bg-green-100 border-green-300" : isActive ? $"bg-{color}-50 border-{color}-300 shadow-md" : "bg-gray-50 border-gray-200";
+                var textClass = isDone ? "text-green-700" : isActive ? $"text-{color}-700" : "text-gray-400";
+                var iconClass = isDone ? "ph-check-circle text-green-500" : $"{icon} text-{color}-500";
+                <div class="flex items-start mb-4 last:mb-0">
+                    <div class="flex flex-col items-center mr-4">
+                        <div class="w-10 h-10 rounded-full border-2 @bgClass flex items-center justify-center flex-shrink-0">
+                            <i class="ph @iconClass text-xl"></i>
+                        </div>
+                        @if (i < states.Length - 1)
+                        {
+                            <div class="w-0.5 h-8 @(isDone ? "bg-green-300" : "bg-gray-200") mt-1"></div>
+                        }
+                    </div>
+                    <div class="pt-1">
+                        <p class="font-bold text-sm @textClass">@name @(isActive ? "← Curentă" : "")</p>
+                        <p class="text-xs text-gray-400 mt-0.5">@desc</p>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Control -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <form method="post" asp-action="State">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="StepsCompleted" />
+
+                <div class="mb-4">
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Rută selectată</label>
+                    <input asp-for="SelectedRoute" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 outline-none" placeholder="ex: Chișinău – București" />
+                </div>
+
+                @if (Model.Machine.CurrentState.CanAdvance)
+                {
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl transition-colors flex justify-center items-center">
+                        <i class="ph ph-play mr-2 text-lg"></i> Avansează Starea
+                    </button>
+                }
+                else
+                {
+                    <a asp-controller="Lab7" asp-action="State" class="w-full block text-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-xl transition-colors">
+                        <i class="ph ph-arrow-counter-clockwise mr-2"></i> Resetează Automatul
+                    </a>
+                }
+            </form>
+        </div>
+    </div>
+
+    <!-- Display -->
+    <div class="lg:col-span-3">
+        <!-- Current state card -->
+        <div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-8 text-white mb-6 relative overflow-hidden">
+            <div class="absolute inset-0 opacity-5">
+                <i class="ph ph-ticket absolute text-[20rem] -right-20 -top-20 text-white"></i>
+            </div>
+            <p class="text-xs text-gray-400 uppercase tracking-widest mb-2">Starea Curentă</p>
+            <div class="flex items-center gap-4 mb-4">
+                <div class="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center">
+                    <i class="ph @Model.Machine.CurrentState.IconClass text-white text-3xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold">@Model.Machine.CurrentState.StateName</h2>
+                    <p class="text-gray-400 text-sm">@Model.Machine.CurrentState.Description</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-4 mt-4 pt-4 border-t border-white/10">
+                <div>
+                    <p class="text-xs text-gray-400">Sumă Introdusă</p>
+                    <p class="text-lg font-bold text-emerald-400">@Model.Machine.InsertedAmount.ToString("N2") lei</p>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-400">Preț Bilet</p>
+                    <p class="text-lg font-bold">@Model.Machine.TicketPrice.ToString("N2") lei</p>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-400">Rută</p>
+                    <p class="text-sm font-semibold">@(string.IsNullOrWhiteSpace(Model.Machine.SelectedRoute) ? "—" : Model.Machine.SelectedRoute)</p>
+                </div>
+            </div>
+
+            @if (!string.IsNullOrWhiteSpace(Model.Machine.IssuedTicketId))
+            {
+                <div class="mt-4 bg-emerald-500/20 rounded-xl px-4 py-3 flex items-center gap-3">
+                    <i class="ph ph-ticket text-emerald-400 text-2xl"></i>
+                    <div>
+                        <p class="text-xs text-gray-400">Bilet Emis</p>
+                        <p class="text-lg font-mono font-bold text-emerald-300">@Model.Machine.IssuedTicketId</p>
+                    </div>
+                </div>
+            }
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(Model.LastMessage))
+        {
+            <div class="bg-blue-50 border border-blue-200 rounded-xl px-5 py-4 flex items-center gap-3 mb-6">
+                <i class="ph ph-info text-blue-500 text-2xl flex-shrink-0"></i>
+                <p class="text-blue-800 text-sm font-medium">@Model.LastMessage</p>
+            </div>
+        }
+
+        <!-- Event log -->
+        @if (Model.Machine.EventLog.Any())
+        {
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="bg-gray-50 border-b border-gray-200 px-6 py-4">
+                    <h4 class="font-bold text-gray-700 flex items-center"><i class="ph ph-list-bullets mr-2 text-blue-400"></i> Jurnal Tranziții</h4>
+                </div>
+                <div class="p-4 space-y-2 max-h-56 overflow-y-auto">
+                    @foreach (var log in Model.Machine.EventLog)
+                    {
+                        <div class="flex items-center gap-2 text-sm">
+                            <i class="ph ph-arrow-right text-blue-400 flex-shrink-0"></i>
+                            <span class="text-gray-600 font-mono text-xs">@log</span>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>

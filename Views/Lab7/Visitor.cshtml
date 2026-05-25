@@ -1,0 +1,122 @@
+@model TMPP_CRM.Controllers.VisitorViewModel
+@{
+    ViewData["Title"] = "Export Documente — Visitor Pattern";
+}
+
+<div class="mb-6">
+    <a asp-controller="Lab7" asp-action="Index" class="text-gray-400 hover:text-gray-600 text-sm flex items-center mb-3">
+        <i class="ph ph-arrow-left mr-1"></i> Înapoi la Lab 7
+    </a>
+    <h1 class="text-2xl font-bold text-gray-900 flex items-center">
+        <i class="ph ph-export text-rose-500 mr-3 text-3xl"></i>
+        Export Documente CRM
+    </h1>
+    <p class="text-gray-500 mt-1">Visitor aplică operații de export pe documente fără a modifica structura internă a claselor.</p>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+    <!-- Form -->
+    <div class="lg:col-span-2">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-6">
+            <div class="bg-gray-50 border-b border-gray-200 px-6 py-4">
+                <h3 class="font-bold text-gray-800 flex items-center"><i class="ph ph-export mr-2 text-rose-500"></i> Format Export</h3>
+            </div>
+            <form method="post" asp-action="Visitor" class="p-6 space-y-4">
+                @Html.AntiForgeryToken()
+
+                @foreach (var f in Model.Formats)
+                {
+                    <label class="flex items-center gap-4 cursor-pointer bg-gray-50 rounded-xl p-4 hover:bg-rose-50 border-2 border-transparent hover:border-rose-200 transition-all @(Model.SelectedFormat == f.Key ? "border-rose-400 bg-rose-50" : "")">
+                        <input type="radio" name="SelectedFormat" value="@f.Key" class="text-rose-600 focus:ring-rose-400" @(Model.SelectedFormat == f.Key ? "checked" : "") />
+                        <div class="w-10 h-10 rounded-xl bg-@f.Color-100 text-@f.Color-600 flex items-center justify-center flex-shrink-0">
+                            <i class="ph @f.Icon text-xl"></i>
+                        </div>
+                        <div>
+                            <span class="block font-bold text-gray-800">Export @f.Name</span>
+                            <span class="block text-xs text-gray-500">Visitor: @f.Name.ToUpper()ExportVisitor</span>
+                        </div>
+                    </label>
+                }
+
+                <button type="submit" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-3 px-6 rounded-xl transition-colors flex justify-center items-center">
+                    <i class="ph ph-download mr-2 text-lg"></i> Aplică Visitor
+                </button>
+            </form>
+        </div>
+
+        <!-- Document collection -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <h4 class="font-bold text-gray-700 mb-4 flex items-center"><i class="ph ph-files mr-2 text-rose-400"></i> Colecție Documente</h4>
+            @foreach (var (type, icon, color) in new[] {
+                ("Deal",    "ph-handshake",  "blue"),
+                ("Lead",    "ph-user-focus", "emerald"),
+                ("Factură", "ph-receipt",    "amber"),
+            })
+            {
+                <div class="flex items-center gap-3 mb-3 last:mb-0 bg-@color-50 rounded-xl px-3 py-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-@color-100 text-@color-600 flex items-center justify-center flex-shrink-0">
+                        <i class="ph @icon text-sm"></i>
+                    </div>
+                    <div>
+                        <span class="font-bold text-gray-800 text-sm">@type</span>
+                        <span class="block text-xs text-gray-500">Implementează IExportable.Accept()</span>
+                    </div>
+                    <i class="ph ph-arrow-right ml-auto text-@color-300 text-xs"></i>
+                </div>
+            }
+            <div class="mt-4 pt-4 border-t border-dashed border-gray-200">
+                <p class="text-xs text-gray-400 italic">Clasele elementelor nu se modifică — noul comportament e adăugat exclusiv în clase Visitor.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results -->
+    <div class="lg:col-span-3">
+        @if (Model.HasResult && Model.Results.Any())
+        {
+            var selectedFmt = Model.Formats.FirstOrDefault(f => f.Key == Model.SelectedFormat);
+            <div class="bg-gray-900 rounded-2xl px-6 py-4 flex items-center gap-4 mb-6">
+                <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
+                    <i class="ph @selectedFmt.Icon text-white text-xl"></i>
+                </div>
+                <div>
+                    <p class="text-white font-bold">Visitor aplicat: @selectedFmt.Name ExportVisitor</p>
+                    <p class="text-gray-400 text-xs">@Model.Results.Count documente procesate fără a modifica clasele lor</p>
+                </div>
+            </div>
+
+            @foreach (var (elementType, content) in Model.Results)
+            {
+                var (icon, color) = elementType switch
+                {
+                    "Deal"    => ("ph-handshake",  "blue"),
+                    "Lead"    => ("ph-user-focus", "emerald"),
+                    "Factură" => ("ph-receipt",    "amber"),
+                    _         => ("ph-file",       "gray")
+                };
+                <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-4">
+                    <div class="bg-gray-50 border-b border-gray-100 px-5 py-3 flex items-center gap-3">
+                        <div class="w-7 h-7 rounded-lg bg-@color-100 text-@color-600 flex items-center justify-center">
+                            <i class="ph @icon text-sm"></i>
+                        </div>
+                        <span class="font-bold text-gray-700 text-sm">@elementType</span>
+                        <span class="ml-auto px-2 py-0.5 rounded-full text-xs font-bold bg-@(Model.SelectedFormat == "pdf" ? "red" : Model.SelectedFormat == "csv" ? "green" : "orange")-100 text-@(Model.SelectedFormat == "pdf" ? "red" : Model.SelectedFormat == "csv" ? "green" : "orange")-700">
+                            @Model.SelectedFormat.ToUpper()
+                        </span>
+                    </div>
+                    <div class="p-5">
+                        <pre class="text-xs text-gray-700 bg-gray-50 rounded-xl p-4 overflow-x-auto whitespace-pre-wrap font-mono leading-relaxed">@content</pre>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="flex flex-col items-center justify-center h-80 bg-white rounded-2xl border border-dashed border-gray-200 text-gray-400">
+                <i class="ph ph-export text-6xl mb-4 text-rose-200"></i>
+                <p class="font-medium">Selectează un format și aplică Visitor</p>
+                <p class="text-sm">pentru a vedea exportul documentelor fără modificarea claselor</p>
+            </div>
+        }
+    </div>
+</div>

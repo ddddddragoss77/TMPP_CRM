@@ -1,6 +1,29 @@
-@model TMPP_CRM.Controllers.AdapterViewModel
+@model TMPP_CRM.Controllers.AdapterInputViewModel
 @{
     ViewData["Title"] = "Terminal Procesare Plăți";
+}
+
+@if (Model.History.Any())
+{
+    <!-- DB Transaction Log shown at top -->
+    <div class="mb-6 bg-gray-900 rounded-2xl border border-gray-800 overflow-hidden">
+        <div class="bg-gray-950 px-5 py-3 border-b border-gray-800 flex justify-between items-center">
+            <h4 class="text-sm font-bold text-gray-300 flex items-center"><i class="ph ph-database mr-2 text-sky-400"></i> Tranzacții Salvate în DB (@Model.History.Count)</h4>
+        </div>
+        <div class="divide-y divide-gray-800 max-h-40 overflow-y-auto">
+            @foreach (var tx in Model.History)
+            {
+                <div class="px-5 py-2.5 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="@(tx.IsSuccess ? "text-emerald-400" : "text-red-400") text-xs font-bold uppercase w-16">@(tx.IsSuccess ? "OK" : "ERR")</span>
+                        <span class="text-gray-300 text-sm">@tx.Description</span>
+                        <span class="text-gray-500 text-xs">@tx.Provider.ToUpper() — @tx.Amount.ToString("N2") @tx.Currency</span>
+                    </div>
+                    <span class="text-gray-600 text-xs">@tx.CreatedAt.ToString("dd.MM HH:mm:ss")</span>
+                </div>
+            }
+        </div>
+    </div>
 }
 
 <div class="mb-6 flex items-center justify-between">
@@ -13,106 +36,143 @@
     </div>
 </div>
 
-<div class="bg-white border border-gray-100 rounded-xl p-6 mb-8 shadow-sm">
-    <div class="flex items-center text-sm text-gray-600">
-        <i class="ph ph-shield-check text-sky-500 text-2xl mr-3"></i>
-        <p>Sistemul convertește automat datele de tranzacție (ex: conversie în cenți pentru Stripe, adaptare request-uri specifice) astfel încât <strong>interfața de procesare să rămână complet unificată</strong> indiferent de gateway.</p>
-    </div>
-</div>
+<div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+    <!-- Form -->
+    <div class="lg:col-span-2">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="bg-gray-50 border-b border-gray-200 px-6 py-4">
+                <h3 class="font-bold text-gray-800 flex items-center">
+                    <i class="ph ph-sliders mr-2 text-sky-500"></i> Configurare Tranzacție
+                </h3>
+            </div>
+            <form method="post" asp-action="Adapter" class="p-6 space-y-5">
+                @Html.AntiForgeryToken()
 
-<!-- Selector provider -->
-<div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 mb-8">
-    <h3 class="text-sm font-bold text-gray-800 uppercase tracking-widest mb-4">Selectează procesatorul pentru a încasa @Model.Amount RON:</h3>
-    <div class="flex gap-4 flex-wrap">
-        @foreach (var p in new[] { ("paypal", "PayPal", "blue"), ("stripe", "Stripe", "indigo"), ("googlepay", "Google Pay", "gray") })
+                <!-- Provider -->
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 uppercase tracking-widest mb-3">Procesator Plată</label>
+                    <div class="space-y-2">
+                        @foreach (var p in new[] {
+                            ("paypal",    "PayPal",     "blue",   "ph-paypal-logo"),
+                            ("stripe",    "Stripe",     "indigo", "ph-stripe-logo"),
+                            ("googlepay", "Google Pay", "gray",   "ph-google-logo")
+                        })
+                        {
+                            <label class="flex items-center p-3 border-2 rounded-xl cursor-pointer transition-all @(Model.Provider == p.Item1 ? $"border-{p.Item3}-400 bg-{p.Item3}-50" : "border-gray-200 hover:border-gray-300")">
+                                <input type="radio" name="Provider" value="@p.Item1"
+                                       @(Model.Provider == p.Item1 ? "checked" : "") class="sr-only">
+                                <i class="ph @p.Item4 mr-3 text-2xl @(Model.Provider == p.Item1 ? $"text-{p.Item3}-600" : "text-gray-400")"></i>
+                                <span class="font-bold text-gray-800">@p.Item2</span>
+                            </label>
+                        }
+                    </div>
+                </div>
+
+                <!-- Amount + Currency -->
+                <div class="grid grid-cols-3 gap-3">
+                    <div class="col-span-2">
+                        <label asp-for="Amount" class="block text-xs font-bold text-gray-600 uppercase tracking-widest mb-1">Sumă *</label>
+                        <input asp-for="Amount" type="number" step="0.01" min="0.01" placeholder="150.00"
+                               class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-sky-500 outline-none transition" />
+                    </div>
+                    <div>
+                        <label asp-for="Currency" class="block text-xs font-bold text-gray-600 uppercase tracking-widest mb-1">Monedă</label>
+                        <select asp-for="Currency" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-sky-500 outline-none">
+                            <option value="RON">RON</option>
+                            <option value="EUR">EUR</option>
+                            <option value="USD">USD</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div>
+                    <label asp-for="Description" class="block text-xs font-bold text-gray-600 uppercase tracking-widest mb-1">Descriere Tranzacție</label>
+                    <input asp-for="Description" placeholder="ex: Achizitie licenta CRM Pro"
+                           class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-sky-500 outline-none transition" />
+                </div>
+
+                <button type="submit"
+                        class="w-full bg-sky-600 hover:bg-sky-700 text-white font-bold py-3 px-6 rounded-xl shadow-md shadow-sky-600/20 transition-colors flex justify-center items-center">
+                    <i class="ph ph-paper-plane-right mr-2 text-lg"></i> Procesează Plata
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Result -->
+    <div class="lg:col-span-3">
+        @if (Model.HasResult && Model.Result != null)
         {
-            var isActive = Model.SelectedProvider.ToLower() == p.Item1;
-            <a asp-controller="Lab4" asp-action="Adapter" asp-route-provider="@p.Item1" asp-route-amount="@Model.Amount"
-               class="flex items-center px-6 py-3 rounded-xl font-medium transition-all duration-200 @(isActive ? $"bg-{p.Item3}-600 text-white shadow-md shadow-{p.Item3}-500/30 scale-105" : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200 hover:border-gray-300")">
-                @if(p.Item1 == "paypal") { <i class="ph ph-paypal-logo mr-2 text-xl"></i> }
-                @if(p.Item1 == "stripe") { <i class="ph ph-stripe-logo mr-2 text-xl"></i> }
-                @if(p.Item1 == "googlepay") { <i class="ph ph-google-logo mr-2 text-xl"></i> }
-                @p.Item2
-            </a>
-        }
-    </div>
-</div>
+            <div class="space-y-6">
+                <!-- Status Card -->
+                <div class="bg-white rounded-2xl shadow-sm border @(Model.Result.IsSuccess ? "border-emerald-200" : "border-red-200") overflow-hidden">
+                    <div class="@(Model.Result.IsSuccess ? "bg-emerald-500" : "bg-red-500") text-white p-6 relative overflow-hidden">
+                        <i class="ph @(Model.Result.IsSuccess ? "ph-check-circle" : "ph-x-circle") absolute -right-6 -bottom-6 text-9xl opacity-20"></i>
+                        <div class="relative z-10">
+                            <p class="text-xs uppercase tracking-widest font-bold mb-1 opacity-90">Stare Tranzacție</p>
+                            <h2 class="text-3xl font-extrabold">@(Model.Result.IsSuccess ? "APROBATĂ" : "RESPINSĂ")</h2>
+                            <div class="mt-2 inline-block bg-white/20 px-3 py-1 rounded-lg text-sm backdrop-blur-sm">
+                                Sistem Activ: <strong>@Model.Result.Provider</strong>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div class="flex justify-between items-center py-2 border-b border-gray-50">
+                            <span class="text-sm text-gray-500 flex items-center"><i class="ph ph-hash mr-2"></i> ID Referință</span>
+                            <span class="text-xs font-bold text-gray-900 bg-gray-100 px-2 py-1 rounded">@Model.Result.TransactionId</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-50">
+                            <span class="text-sm text-gray-500 flex items-center"><i class="ph ph-coins mr-2"></i> Valoare Procesată</span>
+                            <span class="font-bold text-gray-900 text-lg">@Model.Result.Amount.ToString("F2") @Model.Result.Currency</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-50">
+                            <span class="text-sm text-gray-500 flex items-center"><i class="ph ph-shield-check mr-2"></i> Validare 3D Secure</span>
+                            <span class="font-bold @(Model.IsValid ? "text-emerald-600" : "text-red-500")">@(Model.IsValid ? "Aprobat" : "Eșuat")</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2">
+                            <span class="text-sm text-gray-500 flex items-center"><i class="ph ph-clock mr-2"></i> Timestamp</span>
+                            <span class="text-sm font-medium text-gray-900">@Model.Result.ProcessedAt.ToString("dd.MM.yyyy HH:mm:ss")</span>
+                        </div>
+                    </div>
+                </div>
 
-<!-- Rezultat plata -->
-<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div class="@(Model.Result.IsSuccess ? "bg-emerald-500" : "bg-red-500") text-white p-6 relative overflow-hidden">
-            <i class="ph @(Model.Result.IsSuccess ? "ph-check-circle" : "ph-x-circle") absolute -right-6 -bottom-6 text-9xl opacity-20"></i>
-            <div class="relative z-10">
-                <p class="text-xs uppercase tracking-widest font-bold mb-1 opacity-90">Stare Tranzacție</p>
-                <h2 class="text-3xl font-extrabold">@(Model.Result.IsSuccess ? "APROBATĂ" : "RESPINSĂ")</h2>
-                <div class="mt-2 inline-block bg-white/20 px-3 py-1 rounded-lg text-sm backdrop-blur-sm">
-                    Sistem Activ: <strong>@Model.Result.Provider</strong>
+                <!-- Jurnal conversie -->
+                <div class="bg-gray-900 rounded-2xl shadow-lg p-6 text-gray-300">
+                    <h3 class="font-bold text-white mb-6 flex items-center border-b border-gray-800 pb-3">
+                        <i class="ph ph-terminal-window mr-2 text-sky-400"></i> Jurnal Conversie Unified API
+                    </h3>
+                    <div class="space-y-4 text-sm font-mono">
+                        <div class="text-sky-400">▶ IPaymentGateway.ProcessPayment(@Model.Amount @Model.Currency)</div>
+                        <div class="text-gray-500 pl-4">↓ Adapter @Model.Provider intervine ↓</div>
+                        @if (Model.Provider == "stripe")
+                        {
+                            <div class="text-indigo-400 pl-4">Translate: amountInCents = @((int)(Model.Amount * 100))</div>
+                            <div class="text-white bg-indigo-900/50 px-3 py-1 rounded border border-indigo-800 w-fit pl-4">Execute: StripeService.ChargeCard()</div>
+                        }
+                        else if (Model.Provider == "googlepay")
+                        {
+                            <div class="text-gray-300 pl-4">Translate: new GooglePayRequest {{ amount = @Model.Amount }}</div>
+                            <div class="text-white bg-gray-800 px-3 py-1 rounded border border-gray-700 w-fit pl-4">Execute: GooglePayService.SendPayment()</div>
+                        }
+                        else
+                        {
+                            <div class="text-blue-300 pl-4">Translate: amount = (double)@Model.Amount</div>
+                            <div class="text-white bg-blue-900/50 px-3 py-1 rounded border border-blue-800 w-fit pl-4">Execute: PayPalService.MakePayment()</div>
+                        }
+                        <div class="text-emerald-400">✓ Translatare Reușită → Status: @(Model.Result.IsSuccess ? "200 OK" : "REJECTED")</div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="p-6 space-y-4">
-            <div class="flex justify-between items-center py-2 border-b border-gray-50">
-                <span class="text-sm text-gray-500 flex items-center"><i class="ph ph-hash mr-2"></i> ID Referință</span>
-                <span class="text-xs font-bold text-gray-900 bg-gray-100 px-2 py-1 rounded">@Model.Result.TransactionId</span>
+        }
+        else
+        {
+            <div class="h-full min-h-[400px] flex items-center justify-center bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
+                <div class="text-center text-gray-400">
+                    <i class="ph ph-credit-card text-6xl mb-4 block opacity-30"></i>
+                    <p class="font-medium">Selectează un procesator, introdu suma<br>și apasă <strong>„Procesează Plata"</strong>.</p>
+                </div>
             </div>
-            <div class="flex justify-between items-center py-2 border-b border-gray-50">
-                <span class="text-sm text-gray-500 flex items-center"><i class="ph ph-coins mr-2"></i> Valoare Încasată</span>
-                <span class="font-bold text-gray-900 text-lg">@Model.Result.Amount.ToString("F2") @Model.Result.Currency</span>
-            </div>
-            <div class="flex justify-between items-center py-2 border-b border-gray-50">
-                <span class="text-sm text-gray-500 flex items-center"><i class="ph ph-shield-check mr-2"></i> Validare 3D Secure</span>
-                <span class="font-bold @(Model.IsValid ? "text-emerald-600" : "text-red-500") flex items-center">
-                    @(Model.IsValid ? "Aprobat" : "Eșuat")
-                </span>
-            </div>
-            <div class="flex justify-between items-center py-2">
-                <span class="text-sm text-gray-500 flex items-center"><i class="ph ph-clock mr-2"></i> Timestamp</span>
-                <span class="text-sm font-medium text-gray-900">@Model.Result.ProcessedAt.ToString("dd.MM.yyyy HH:mm:ss")</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Diagrama adapter / Logs unificate -->
-    <div class="bg-gray-900 rounded-2xl shadow-lg p-6 text-gray-300">
-        <h3 class="font-bold text-white mb-6 flex items-center border-b border-gray-800 pb-3">
-            <i class="ph ph-terminal-window mr-2 text-sky-400"></i> Jurnal Conversie Unified API
-        </h3>
-        
-        <div class="space-y-6 text-sm tracking-wide font-medium relative">
-            <div class="absolute left-4 top-4 bottom-4 w-px bg-gray-800"></div>
-            
-            <div class="relative pl-10">
-                <div class="absolute left-2 top-1 w-4 h-4 rounded-full bg-sky-500 shadow-[0_0_10px_rgba(14,165,233,0.5)]"></div>
-                <span class="text-sky-400 font-bold block mb-1">CRM Client (Interfață Unificată)</span>
-                <span class="text-gray-500 bg-gray-800 px-2 py-1 rounded block w-fit border border-gray-700">Call: <span class="text-gray-300">IPaymentGateway.ProcessPayment(@Model.Amount)</span></span>
-            </div>
-            
-            <div class="relative pl-10">
-                <div class="absolute left-2 top-1 w-4 h-4 rounded-full border-2 border-gray-600 bg-gray-900"></div>
-                <div class="text-gray-500 text-xs my-2 italic">↓ Stratul de adaptare intervine ↓</div>
-            </div>
-
-            <div class="relative pl-10">
-                <div class="absolute left-2 top-1 w-4 h-4 rounded-full bg-indigo-500 shadow-[0_0_10px_rgba(99,102,241,0.5)]"></div>
-                @if (Model.SelectedProvider == "paypal") {
-                    <span class="text-blue-400 font-bold block mb-1">Mapping Către PayPal API</span>
-                    <span class="text-gray-500 bg-gray-800 px-2 py-1 rounded block w-fit border border-gray-700">Translate: <span class="text-blue-300">amount = (double)@Model.Amount</span></span>
-                    <span class="text-white bg-blue-900/50 px-2 py-1 rounded block w-fit mt-2 border border-blue-800">Execute: PayPalService.MakePayment()</span>
-                } else if (Model.SelectedProvider == "stripe") {
-                    <span class="text-indigo-400 font-bold block mb-1">Mapping Către Stripe API</span>
-                    <span class="text-gray-500 bg-gray-800 px-2 py-1 rounded block w-fit border border-gray-700">Translate: <span class="text-indigo-300">amountInCents = @((int)(Model.Amount * 100))</span></span>
-                    <span class="text-white bg-indigo-900/50 px-2 py-1 rounded block w-fit mt-2 border border-indigo-800">Execute: StripeService.ChargeCard()</span>
-                } else {
-                    <span class="text-gray-200 font-bold block mb-1">Mapping Către GPay API</span>
-                    <span class="text-gray-500 bg-gray-800 px-2 py-1 rounded block w-fit border border-gray-700">Translate: <span class="text-gray-300">new GooglePayRequest { ... }</span></span>
-                    <span class="text-white bg-gray-800 px-2 py-1 rounded block w-fit mt-2 border border-gray-700">Execute: GooglePayService.SendPayment()</span>
-                }
-            </div>
-            
-            <div class="relative pl-10 pt-4">
-                <span class="text-emerald-400 font-bold block">✓ Status: Translatare Reușită</span>
-            </div>
-        </div>
+        }
     </div>
 </div>

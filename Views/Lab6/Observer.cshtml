@@ -1,86 +1,110 @@
-@model TMPP_CRM.Domain.Entities.Deal
+@model TMPP_CRM.Controllers.ObserverViewModel
 @{
-    ViewData["Title"] = "Notificări Live";
+    ViewData["Title"] = "Observer — Event Bus Live";
+    var allStages = new[] { "Contacted","Qualified","ProposalSent","Negotiation","Won","Lost" };
 }
 
-<div class="mb-6 flex items-center justify-between">
-    <div>
-        <h1 class="text-2xl font-bold text-gray-900 flex items-center">
-            <i class="ph ph-broadcast text-indigo-600 mr-3 text-3xl"></i>
-            Event Bus & Alerte Live
-        </h1>
-        <p class="text-gray-500 mt-1">Subsistemele se abonează automat pentru a reacționa la schimbările de stare ale obiectelor cheie.</p>
-    </div>
+<div class="mb-6">
+    <h1 class="text-2xl font-bold text-gray-900 flex items-center">
+        <i class="ph ph-broadcast text-indigo-600 mr-3 text-3xl"></i>
+        Event Bus & Alerte Live
+    </h1>
+    <p class="text-gray-500 mt-1">Schimbă stage-ul unui deal real și observatorii notifică automat — evenimentele se salvează în baza de date.</p>
 </div>
 
 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <!-- Form -->
     <div class="lg:col-span-4">
-        <!-- Panou Subiect Monitorizat -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sticky top-6">
-            <div class="flex items-center space-x-3 mb-6 pb-4 border-b border-gray-100">
-                <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center text-xl">
-                    <i class="ph ph-target"></i>
-                </div>
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <h3 class="font-bold text-gray-800 mb-5 flex items-center border-b border-gray-100 pb-3">
+                <i class="ph ph-target mr-2 text-indigo-500"></i> Configurare Event
+            </h3>
+            <form method="post" asp-action="Observer" class="space-y-5">
+                @Html.AntiForgeryToken()
+
                 <div>
-                    <span class="block text-xs uppercase tracking-widest font-bold text-gray-400">Entitate Monitorizată</span>
-                    <strong class="text-gray-800 text-lg">@Model.Title</strong>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Deal din baza de date</label>
+                    <select asp-for="SelectedDealId" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-400 outline-none">
+                        <option value="@Guid.Empty">— Introdu manual —</option>
+                        @foreach (var d in Model.Deals)
+                        {
+                            <option value="@d.Id">@d.Title [Stage: @d.Stage]</option>
+                        }
+                    </select>
                 </div>
-            </div>
 
-            <div class="mb-6">
-                <label class="block text-xs uppercase font-bold tracking-wider text-gray-500 mb-2">Stare Curentă (Trigger):</label>
-                <div class="bg-indigo-600 text-white font-bold text-center py-3 rounded-xl shadow-md shadow-indigo-600/20 flex items-center justify-center">
-                    <span class="relative flex h-3 w-3 mr-3">
-                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
-                      <span class="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
-                    </span>
-                    @Model.Stage
+                <div>
+                    <label asp-for="DealTitle" class="block text-xs font-bold text-gray-500 mb-1">Titlu manual (dacă nu din DB)</label>
+                    <input asp-for="DealTitle" placeholder="ex: Contract Enterprise" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-400 outline-none" />
                 </div>
-            </div>
 
-            <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-4 text-xs text-indigo-800">
-                <i class="ph ph-info font-bold text-lg mb-2 block text-indigo-600"></i>
-                Când starea Deal-ului se modifică, entitatea trimite un eveniment (broadcast). Modulele externe "ascultă" acest eveniment și execută proceduri independente (ex: trimitere email, logare acțiune).
-            </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Stage-uri de parcurs (în ordine)</label>
+                    <div class="space-y-2">
+                        @foreach (var s in allStages)
+                        {
+                            <label class="flex items-center p-2 rounded-lg hover:bg-indigo-50 cursor-pointer">
+                                <input type="checkbox" name="Stages" value="@s" class="mr-3 w-4 h-4 accent-indigo-600">
+                                <span class="text-sm font-medium text-gray-700">@s</span>
+                            </label>
+                        }
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl shadow-md shadow-indigo-600/20 transition-colors flex justify-center items-center">
+                    <i class="ph ph-broadcast mr-2 text-lg"></i> Lansează Evenimentele
+                </button>
+            </form>
         </div>
     </div>
 
-    <div class="lg:col-span-8">
-        <h3 class="font-bold text-gray-800 flex items-center mb-6">
-            <i class="ph ph-activity mr-2 text-indigo-500"></i> Log Reacții Abonați (Subscribers)
-        </h3>
-
-        <div class="space-y-6">
-            <!-- Event 1 -->
-            <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-                <div class="bg-gray-50 border-b border-gray-200 px-4 py-3 flex justify-between items-center">
-                    <div class="flex items-center text-sm font-bold text-gray-700">
-                        <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center mr-2 text-xs">1</span>
-                        Event: Stare modificată în "Negotiation"
-                    </div>
-                    <span class="text-xs  text-gray-500"><i class="ph ph-clock"></i> 2 subscribers fired</span>
-                </div>
-                <div class="p-6">
-                    <div class=" text-sm bg-blue-50 text-blue-800 font-medium p-4 rounded-xl leading-relaxed whitespace-pre-wrap">@ViewBag.Log1</div>
-                </div>
+    <!-- Results + History -->
+    <div class="lg:col-span-8 space-y-6">
+        @if (Model.HasResult)
+        {
+            <div class="bg-indigo-900 rounded-2xl p-5 text-white border border-indigo-800">
+                <p class="text-xs text-indigo-300 uppercase tracking-widest mb-1">Deal procesat</p>
+                <h2 class="text-xl font-bold">@Model.DealTitle</h2>
+                <p class="text-indigo-300 mt-1">Stage final: <strong class="text-white">@Model.FinalStage</strong></p>
             </div>
 
-            <!-- Event 2 -->
-            <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow relative">
-                <div class="absolute left-6 -top-6 w-0.5 h-6 bg-gray-200"></div> <!-- Connector line -->
-                <div class="bg-gray-50 border-b border-gray-200 px-4 py-3 flex justify-between items-center">
-                    <div class="flex items-center text-sm font-bold text-gray-700">
-                        <span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mr-2 text-xs">2</span>
-                        Event: Stare modificată în "Won"
+            @foreach (var step in Model.Steps)
+            {
+                <div class="bg-white border border-indigo-200 rounded-2xl overflow-hidden shadow-sm">
+                    <div class="bg-indigo-50 border-b border-indigo-100 px-5 py-3 flex justify-between items-center">
+                        <span class="font-bold text-indigo-800 text-sm flex items-center">
+                            <i class="ph ph-lightning mr-2"></i> Stage → @step.Stage
+                        </span>
+                        <span class="text-xs text-indigo-500">2 subscribers fired</span>
                     </div>
-                    <span class="text-xs  text-gray-500"><i class="ph ph-clock"></i> 2 subscribers fired</span>
-                </div>
-                <div class="p-6">
-                    <div class=" text-sm bg-blue-50 text-blue-800 font-medium p-4 rounded-xl leading-relaxed whitespace-pre-wrap border border-emerald-500/30 relative">
-                        <div class="absolute top-2 right-2 text-emerald-500 opacity-50"><i class="ph ph-check-circle text-2xl"></i></div>
-                        @ViewBag.Log2
+                    <div class="p-5">
+                        <pre class="text-sm bg-indigo-50 text-indigo-900 p-4 rounded-xl whitespace-pre-wrap font-mono leading-relaxed">@step.Log</pre>
                     </div>
                 </div>
+            }
+        }
+
+        <!-- DB Log -->
+        <div class="bg-gray-900 rounded-2xl border border-gray-800 overflow-hidden">
+            <div class="bg-gray-950 px-5 py-3 border-b border-gray-800 flex items-center justify-between">
+                <h4 class="text-sm font-bold text-gray-300 flex items-center"><i class="ph ph-database mr-2 text-indigo-400"></i> Istoric Evenimente din DB (@Model.EventLog.Count)</h4>
+                <span class="text-xs text-gray-500">Ultimele 20</span>
+            </div>
+            <div class="divide-y divide-gray-800 max-h-64 overflow-y-auto">
+                @if (!Model.EventLog.Any())
+                {
+                    <div class="p-6 text-center text-gray-600 text-sm">Niciun eveniment salvat încă.</div>
+                }
+                @foreach (var evt in Model.EventLog)
+                {
+                    <div class="px-5 py-3 flex items-center justify-between">
+                        <div>
+                            <span class="text-white text-sm font-medium">@evt.DealTitle</span>
+                            <span class="ml-2 text-xs bg-indigo-900 text-indigo-300 px-2 py-0.5 rounded-full">→ @evt.NewStage</span>
+                        </div>
+                        <span class="text-gray-500 text-xs">@evt.CreatedAt.ToString("dd.MM HH:mm:ss")</span>
+                    </div>
+                }
             </div>
         </div>
     </div>

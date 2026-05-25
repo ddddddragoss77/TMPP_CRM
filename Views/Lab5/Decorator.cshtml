@@ -1,4 +1,4 @@
-@model TMPP_CRM.Controllers.DecoratorViewModel
+@model TMPP_CRM.Controllers.DecoratorInputViewModel
 
 @{
     ViewData["Title"] = "Configurare Sistem de Alertare";
@@ -10,7 +10,7 @@
             <i class="ph ph-bell-ringing text-emerald-600 mr-3 text-3xl"></i>
             Motor Dinamic de Alertare CRM
         </h1>
-        <p class="text-gray-500 mt-1">Atașează la runtime noi capabilități de notificare pe lângă sistemul de bază, fără a afecta alte module.</p>
+        <p class="text-gray-500 mt-1">Atașează la runtime noi capabilități de notificare, fără a afecta alte module.</p>
     </div>
 </div>
 
@@ -20,63 +20,66 @@
         <div class="bg-gray-50 border-b border-gray-200 px-6 py-4">
             <h3 class="font-bold text-gray-800 flex items-center"><i class="ph ph-sliders mr-2 text-emerald-500"></i> Setări Pipeline Notificări</h3>
         </div>
-        
-        <form method="get" asp-action="Decorator" class="p-6">
-            <div class="space-y-4 mb-8">
-                <!-- Base Component (Can't disable) -->
-                <div class="flex items-center justify-between p-4 bg-gray-50 border border-gray-200 rounded-xl">
+
+        <form method="post" asp-action="Decorator" class="p-6 space-y-6">
+            @Html.AntiForgeryToken()
+
+            <!-- Mesaj -->
+            <div>
+                <label asp-for="Message" class="block text-xs font-bold text-gray-600 uppercase tracking-widest mb-1">Mesaj de Notificare</label>
+                <textarea asp-for="Message" rows="3" placeholder="ex: Campanie de reduceri 20% activă până pe 31 Mai!"
+                          class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-400 outline-none transition resize-none"></textarea>
+            </div>
+
+            <!-- Canale -->
+            <div class="space-y-3">
+                <label class="block text-xs font-bold text-gray-600 uppercase tracking-widest">Canale Active</label>
+
+                <!-- Email — always on -->
+                <div class="flex items-center justify-between p-4 bg-gray-50 border border-gray-200 rounded-xl opacity-80">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center">
                             <i class="ph ph-envelope-simple text-xl"></i>
                         </div>
                         <div>
-                            <span class="block font-bold text-gray-800">Sistem de bază (Email)</span>
-                            <span class="text-xs text-gray-500 block">Trimis obligatoriu pentru compliance fiscal</span>
+                            <span class="block font-bold text-gray-800">Email (Bază)</span>
+                            <span class="text-xs text-gray-500">Întotdeauna activ – compliance fiscal</span>
                         </div>
                     </div>
-                    <label class="relative inline-flex items-center cursor-not-allowed">
-                        <input type="checkbox" checked disabled class="sr-only peer">
-                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500 opacity-50"></div>
-                    </label>
+                    <input type="checkbox" checked disabled class="w-5 h-5 accent-emerald-500">
                 </div>
-                
-                <!-- SMS Wrapper -->
+
+                <!-- SMS -->
                 <label class="flex items-center justify-between p-4 bg-white hover:bg-emerald-50/50 border border-gray-200 rounded-xl cursor-pointer transition-colors group">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center group-hover:bg-blue-100 transition-colors">
                             <i class="ph ph-chat-text text-xl"></i>
                         </div>
                         <div>
-                            <span class="block font-bold text-gray-800">Atașament Strat SMS</span>
-                            <span class="text-xs text-gray-500 block">Adaugă notificare instantanee pe telefon</span>
+                            <span class="block font-bold text-gray-800">Strat SMS Decorator</span>
+                            <span class="text-xs text-gray-500">Adaugă notificare instantanee pe telefon</span>
                         </div>
                     </div>
-                    <div class="relative inline-flex items-center">
-                        <input type="checkbox" name="useSms" value="true" @(Model.UseSms ? "checked" : "") class="sr-only peer">
-                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
-                    </div>
+                    <input asp-for="UseSms" type="checkbox" class="w-5 h-5 accent-emerald-500">
                 </label>
-                
-                <!-- Push Wrapper -->
-                <label class="flex items-center justify-between p-4 bg-white hover:bg-emerald-50/50 border border-gray-200 rounded-xl cursor-pointer transition-colors group">
+
+                <!-- Push -->
+                <label class="flex items-center justify-between p-4 bg-white hover:bg-purple-50/50 border border-gray-200 rounded-xl cursor-pointer transition-colors group">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-full bg-purple-50 text-purple-500 flex items-center justify-center group-hover:bg-purple-100 transition-colors">
                             <i class="ph ph-device-mobile text-xl"></i>
                         </div>
                         <div>
-                            <span class="block font-bold text-gray-800">Atașament Strat Push API</span>
-                            <span class="text-xs text-gray-500 block">Interceptează apelul pentru aplicația nativă iOS/Android</span>
+                            <span class="block font-bold text-gray-800">Strat Push API Decorator</span>
+                            <span class="text-xs text-gray-500">Notificare nativă iOS/Android</span>
                         </div>
                     </div>
-                    <div class="relative inline-flex items-center">
-                        <input type="checkbox" name="usePush" value="true" @(Model.UsePush ? "checked" : "") class="sr-only peer">
-                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
-                    </div>
+                    <input asp-for="UsePush" type="checkbox" class="w-5 h-5 accent-purple-500">
                 </label>
             </div>
-            
+
             <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-xl shadow-md shadow-emerald-600/20 transition-colors flex justify-center items-center">
-                <i class="ph ph-paper-plane-right mr-2 text-lg"></i> Compilează & Execută Pipeline
+                <i class="ph ph-paper-plane-right mr-2 text-lg"></i> Compilează &amp; Execută Pipeline
             </button>
         </form>
     </div>
@@ -84,24 +87,38 @@
     <!-- Output Terminal -->
     <div class="bg-gray-900 rounded-2xl shadow-lg border border-gray-800 overflow-hidden flex flex-col">
         <div class="bg-gray-950 border-b border-gray-800 px-6 py-4 flex justify-between items-center">
-            <h3 class="font-bold text-gray-300 flex items-center font-medium text-sm uppercase tracking-widest"><i class="ph ph-list-bullets mr-2 text-emerald-400"></i> Istoric Execu?ie</h3>
+            <h3 class="font-bold text-gray-300 flex items-center text-sm uppercase tracking-widest">
+                <i class="ph ph-list-bullets mr-2 text-emerald-400"></i> Istoric Execuție
+            </h3>
             <div class="flex space-x-1.5">
                 <div class="w-3 h-3 rounded-full bg-red-500/50"></div>
                 <div class="w-3 h-3 rounded-full bg-amber-500/50"></div>
                 <div class="w-3 h-3 rounded-full bg-green-500/50"></div>
             </div>
         </div>
-        
+
         <div class="p-6 flex-grow flex flex-col">
-            <div class="flex items-center text-emerald-500 text-xs font-medium mb-4 border-b border-gray-800 pb-2">
-                <span>[System] Invoking Send() on dynamically wrapped object...</span>
-            </div>
-            <div class="font-medium text-sm text-gray-300 whitespace-pre-wrap leading-relaxed">@Model.Result</div>
-            
-            <div class="mt-auto pt-6 border-t border-gray-800 flex items-center justify-between text-xs font-medium text-gray-500">
-                <span>Layers wrapped: @(1 + (Model.UseSms ? 1 : 0) + (Model.UsePush ? 1 : 0))</span>
-                <span class="text-emerald-500">Execution successful.</span>
-            </div>
+            @if (Model.HasResult)
+            {
+                <div class="flex items-center text-emerald-500 text-xs font-medium mb-4 border-b border-gray-800 pb-2">
+                    <span>[System] Invoking Send() on dynamically wrapped object...</span>
+                </div>
+                <div class="font-mono text-sm text-gray-300 whitespace-pre-wrap leading-relaxed bg-gray-800/50 rounded-xl p-4">@Model.Result</div>
+
+                <div class="mt-auto pt-6 border-t border-gray-800 flex items-center justify-between text-xs font-medium text-gray-500">
+                    <span>Layers wrapped: @(1 + (Model.UseSms ? 1 : 0) + (Model.UsePush ? 1 : 0))</span>
+                    <span class="text-emerald-500">Execution successful.</span>
+                </div>
+            }
+            else
+            {
+                <div class="flex-grow flex items-center justify-center text-gray-600">
+                    <div class="text-center">
+                        <i class="ph ph-terminal-window text-5xl mb-3 block opacity-30"></i>
+                        <p class="text-sm">Nicio execuție încă.<br>Configurează și apasă <strong class="text-gray-400">Execută Pipeline</strong>.</p>
+                    </div>
+                </div>
+            }
         </div>
     </div>
 </div>
