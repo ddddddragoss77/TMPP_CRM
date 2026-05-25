@@ -1,0 +1,107 @@
+@{
+    ViewData["Title"] = "Paternuri Comportamentale";
+}
+
+<div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-800 mb-2">Paternuri Comportamentale</h1>
+    <p class="text-gray-500 text-lg">Laborator 7 — Chain of Responsibility, State, Mediator, Template Method, Visitor.</p>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+    <!-- Chain of Responsibility -->
+    <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden border border-gray-100 group">
+        <div class="bg-orange-50 p-6 flex flex-col items-center group-hover:bg-orange-100 transition-colors">
+            <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-orange-600 mb-4 shadow-sm">
+                <i class="ph ph-link text-3xl"></i>
+            </div>
+            <h2 class="text-xl font-bold text-gray-900 text-center">Lanț Suport Tehnic</h2>
+            <p class="text-orange-600 text-sm mt-1 font-medium">Chain of Responsibility</p>
+        </div>
+        <div class="p-6 flex flex-col h-full">
+            <p class="text-gray-600 text-sm mb-6 text-center flex-grow">
+                Cererile de suport sunt procesate ierarhic de la L1 la Management — fiecare handler decide dacă rezolvă sau escaladează.
+            </p>
+            <a asp-controller="Lab7" asp-action="ChainOfResponsibility" class="mt-auto block text-center bg-white border border-gray-200 hover:border-orange-500 hover:text-orange-600 text-gray-700 font-semibold py-2.5 px-4 rounded-xl transition duration-200">
+                Trimite Ticket
+            </a>
+        </div>
+    </div>
+
+    <!-- State -->
+    <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden border border-gray-100 group">
+        <div class="bg-blue-50 p-6 flex flex-col items-center group-hover:bg-blue-100 transition-colors">
+            <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-blue-600 mb-4 shadow-sm">
+                <i class="ph ph-ticket text-3xl"></i>
+            </div>
+            <h2 class="text-xl font-bold text-gray-900 text-center">Automat Bilete</h2>
+            <p class="text-blue-600 text-sm mt-1 font-medium">State Pattern</p>
+        </div>
+        <div class="p-6 flex flex-col h-full">
+            <p class="text-gray-600 text-sm mb-6 text-center flex-grow">
+                Simulează tranzițiile unui automat: Monede → Validare → Emitere Bilet, cu comportament diferit la fiecare stare.
+            </p>
+            <a asp-controller="Lab7" asp-action="State" class="mt-auto block text-center bg-white border border-gray-200 hover:border-blue-500 hover:text-blue-600 text-gray-700 font-semibold py-2.5 px-4 rounded-xl transition duration-200">
+                Pornește Automatul
+            </a>
+        </div>
+    </div>
+
+    <!-- Mediator -->
+    <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden border border-gray-100 group">
+        <div class="bg-sky-50 p-6 flex flex-col items-center group-hover:bg-sky-100 transition-colors">
+            <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-sky-600 mb-4 shadow-sm">
+                <i class="ph ph-airplane text-3xl"></i>
+            </div>
+            <h2 class="text-xl font-bold text-gray-900 text-center">Turn Control ATC</h2>
+            <p class="text-sky-600 text-sm mt-1 font-medium">Mediator Pattern</p>
+        </div>
+        <div class="p-6 flex flex-col h-full">
+            <p class="text-gray-600 text-sm mb-6 text-center flex-grow">
+                Avioanele comunică exclusiv prin turnul de control — niciun avion nu contactează direct alt avion.
+            </p>
+            <a asp-controller="Lab7" asp-action="Mediator" class="mt-auto block text-center bg-white border border-gray-200 hover:border-sky-500 hover:text-sky-600 text-gray-700 font-semibold py-2.5 px-4 rounded-xl transition duration-200">
+                Deschide Turnul ATC
+            </a>
+        </div>
+    </div>
+
+    <!-- Template Method -->
+    <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden border border-gray-100 group">
+        <div class="bg-violet-50 p-6 flex flex-col items-center group-hover:bg-violet-100 transition-colors">
+            <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-violet-600 mb-4 shadow-sm">
+                <i class="ph ph-file-text text-3xl"></i>
+            </div>
+            <h2 class="text-xl font-bold text-gray-900 text-center">Generator Rapoarte</h2>
+            <p class="text-violet-600 text-sm mt-1 font-medium">Template Method</p>
+        </div>
+        <div class="p-6 flex flex-col h-full">
+            <p class="text-gray-600 text-sm mb-6 text-center flex-grow">
+                Algoritmul de generare e fix, pașii specifici sunt personalizați per tip de raport: Vânzări, Lead-uri sau Activitate.
+            </p>
+            <a asp-controller="Lab7" asp-action="TemplateMethod" class="mt-auto block text-center bg-white border border-gray-200 hover:border-violet-500 hover:text-violet-600 text-gray-700 font-semibold py-2.5 px-4 rounded-xl transition duration-200">
+                Generează Raport
+            </a>
+        </div>
+    </div>
+
+    <!-- Visitor -->
+    <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden border border-gray-100 group">
+        <div class="bg-rose-50 p-6 flex flex-col items-center group-hover:bg-rose-100 transition-colors">
+            <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-rose-600 mb-4 shadow-sm">
+                <i class="ph ph-export text-3xl"></i>
+            </div>
+            <h2 class="text-xl font-bold text-gray-900 text-center">Export Documente</h2>
+            <p class="text-rose-600 text-sm mt-1 font-medium">Visitor Pattern</p>
+        </div>
+        <div class="p-6 flex flex-col h-full">
+            <p class="text-gray-600 text-sm mb-6 text-center flex-grow">
+                Exportă Deal-uri, Lead-uri și Facturi în PDF, CSV sau XML — fără a modifica structura internă a claselor document.
+            </p>
+            <a asp-controller="Lab7" asp-action="Visitor" class="mt-auto block text-center bg-white border border-gray-200 hover:border-rose-500 hover:text-rose-600 text-gray-700 font-semibold py-2.5 px-4 rounded-xl transition duration-200">
+                Exportă Documente
+            </a>
+        </div>
+    </div>
+
+</div>

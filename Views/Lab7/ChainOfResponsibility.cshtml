@@ -1,0 +1,141 @@
+@model TMPP_CRM.Controllers.ChainViewModel
+@using TMPP_CRM.Domain.ChainOfResponsibility
+@{
+    ViewData["Title"] = "Suport Tehnic — Chain of Responsibility";
+}
+
+<div class="mb-6">
+    <a asp-controller="Lab7" asp-action="Index" class="text-gray-400 hover:text-gray-600 text-sm flex items-center mb-3">
+        <i class="ph ph-arrow-left mr-1"></i> Înapoi la Lab 7
+    </a>
+    <h1 class="text-2xl font-bold text-gray-900 flex items-center">
+        <i class="ph ph-link text-orange-500 mr-3 text-3xl"></i>
+        Sistem Suport Tehnic Ierarhic
+    </h1>
+    <p class="text-gray-500 mt-1">Cererile sunt procesate de handleri în lanț — fiecare rezolvă sau escaladează mai departe.</p>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+    <!-- Form -->
+    <div class="lg:col-span-2">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="bg-gray-50 border-b border-gray-200 px-6 py-4">
+                <h3 class="font-bold text-gray-800 flex items-center"><i class="ph ph-plus-circle mr-2 text-orange-500"></i> Ticket Nou</h3>
+            </div>
+            <form method="post" asp-action="ChainOfResponsibility" class="p-6 space-y-4">
+                @Html.AntiForgeryToken()
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Titlu problemă</label>
+                    <input asp-for="Title" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-orange-400 outline-none" />
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Descriere</label>
+                    <textarea asp-for="Description" rows="3" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-orange-400 outline-none resize-none"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Complexitate (nivel)</label>
+                    <select asp-for="Level" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-orange-400 outline-none">
+                        <option value="Level1">Nivel 1 — Helpdesk (resetare parolă, FAQ)</option>
+                        <option value="Level2">Nivel 2 — Specialist IT (rețea, VPN)</option>
+                        <option value="Level3">Nivel 3 — Inginer Senior (bug critic, securitate)</option>
+                        <option value="Manager">Manager — Incident major, client enterprise</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Categorie</label>
+                    <input asp-for="Category" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-orange-400 outline-none" />
+                </div>
+
+                <button type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-xl transition-colors flex justify-center items-center">
+                    <i class="ph ph-paper-plane-tilt mr-2 text-lg"></i> Trimite în Lanț
+                </button>
+            </form>
+        </div>
+
+        <!-- Diagram lanț -->
+        <div class="mt-6 bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <h4 class="font-bold text-gray-700 mb-4 flex items-center"><i class="ph ph-tree-structure mr-2 text-orange-400"></i> Structura Lanțului</h4>
+            @foreach (var (name, icon, color, desc) in new[] {
+                ("L1 — Helpdesk",       "ph-headset",    "orange", "FAQ, resetare parolă"),
+                ("L2 — Specialist IT",  "ph-cpu",        "amber",  "Rețea, software, VPN"),
+                ("L3 — Inginer Senior", "ph-wrench",     "red",    "Bug-uri critice, arhitectură"),
+                ("Management",          "ph-briefcase",  "gray",   "Incidente majore, clienți enterprise"),
+            })
+            {
+                <div class="flex items-start mb-3 last:mb-0">
+                    <div class="w-8 h-8 rounded-full bg-@color-100 text-@color-600 flex items-center justify-center mr-3 flex-shrink-0 mt-0.5">
+                        <i class="ph @icon text-sm"></i>
+                    </div>
+                    <div>
+                        <span class="font-semibold text-gray-800 text-sm">@name</span>
+                        <span class="text-gray-400 text-xs block">@desc</span>
+                    </div>
+                    @if (name != "Management")
+                    {
+                        <i class="ph ph-arrow-down text-gray-300 ml-auto mt-1"></i>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Results -->
+    <div class="lg:col-span-3">
+        @if (Model.HasResult && Model.Ticket != null)
+        {
+            <div class="bg-gray-900 rounded-2xl p-6 text-white mb-6">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs text-gray-400 uppercase tracking-widest">Ticket #@Model.Ticket.Id</span>
+                    <span class="px-3 py-1 rounded-full text-xs font-bold bg-orange-500 text-white">@Model.Ticket.Level</span>
+                </div>
+                <h2 class="text-xl font-bold">@Model.Ticket.Title</h2>
+                <p class="text-gray-400 text-sm mt-1">@Model.Ticket.Description</p>
+                <p class="text-gray-500 text-xs mt-2">Categorie: @Model.Ticket.Category</p>
+            </div>
+
+            <div class="space-y-3">
+                @foreach (var r in Model.Results)
+                {
+                    var actionColor = r.Action == "Handled" ? "emerald" : r.Action == "Forwarded" ? "amber" : "gray";
+                    var actionIcon  = r.Action == "Handled" ? "ph-check-circle" : r.Action == "Forwarded" ? "ph-arrow-circle-right" : "ph-question";
+                    <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-full bg-@actionColor-50 text-@actionColor-600 flex items-center justify-center flex-shrink-0">
+                            <i class="ph @actionIcon text-xl"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="font-bold text-gray-800 text-sm">@r.HandlerName</span>
+                                <span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-@actionColor-100 text-@actionColor-700">@r.Action</span>
+                            </div>
+                            <p class="text-gray-600 text-sm">@r.Message</p>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            @if (Model.Results.Any(r => r.Handled))
+            {
+                var finalHandler = Model.Results.Last(r => r.Handled);
+                <div class="mt-6 bg-emerald-50 border border-emerald-200 rounded-2xl p-5 flex items-center gap-4">
+                    <i class="ph ph-check-fat text-4xl text-emerald-500"></i>
+                    <div>
+                        <h4 class="font-bold text-emerald-800">Ticket Rezolvat</h4>
+                        <p class="text-emerald-700 text-sm">Gestionat de: <strong>@finalHandler.HandlerName</strong></p>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="flex flex-col items-center justify-center h-80 bg-white rounded-2xl border border-dashed border-gray-200 text-gray-400">
+                <i class="ph ph-link text-6xl mb-4 text-orange-200"></i>
+                <p class="font-medium">Completează formularul și trimite un ticket</p>
+                <p class="text-sm">pentru a vedea lanțul de procesare în acțiune</p>
+            </div>
+        }
+    </div>
+</div>

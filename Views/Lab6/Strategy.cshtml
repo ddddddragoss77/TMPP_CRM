@@ -1,104 +1,112 @@
-@model TMPP_CRM.Domain.Entities.Deal
+@model TMPP_CRM.Controllers.StrategyViewModel
 @{
-    ViewData["Title"] = "Politici Comerciale (Motor Reduceri)";
+    ViewData["Title"] = "Motor Reduceri — Pattern Strategy";
+    var stages = new[] { "New","Contacted","Qualified","ProposalSent","Negotiation","Won","Lost" };
 }
 
-<div class="mb-6 flex items-center justify-between">
-    <div>
-        <h1 class="text-2xl font-bold text-gray-900 flex items-center">
-            <i class="ph ph-percent text-blue-600 mr-3 text-3xl"></i>
-            Motor Dinamic de Discount
-        </h1>
-        <p class="text-gray-500 mt-1">Algoritmii de calcul pentru oferte sunt decuplați, permițând comutarea politicilor la runtime.</p>
-    </div>
+<div class="mb-6">
+    <h1 class="text-2xl font-bold text-gray-900 flex items-center">
+        <i class="ph ph-percent text-blue-600 mr-3 text-3xl"></i>
+        Motor Dinamic de Discount
+    </h1>
+    <p class="text-gray-500 mt-1">Aplică algoritmi de reducere inter-schimbabili pe deal-uri reale din baza de date.</p>
 </div>
 
-<div class="bg-white border border-gray-100 rounded-xl p-6 mb-8 text-sm text-gray-600 shadow-sm flex items-start gap-4">
-    <i class="ph ph-calculator text-blue-500 text-2xl"></i>
-    <div>
-        <strong class="text-gray-800">Comportament Inter-schimbabil:</strong>
-        În loc să avem block-uri mari de reguli fixe pentru a calcula reducerile (ex: de Black Friday, client fidel etc.), fiecare metodă de calcul este un obiect separat. Sistemul decide în timp real ce formulă matematică să folosească pentru tranzacția curentă.
-    </div>
-</div>
-
-<div class="bg-gray-900 rounded-2xl shadow-lg border border-gray-800 overflow-hidden mb-8">
-    <div class="p-8 flex flex-col md:flex-row items-center justify-between">
-        <div class="flex items-center mb-6 md:mb-0">
-            <div class="w-16 h-16 bg-blue-500/20 text-blue-400 rounded-2xl flex items-center justify-center mr-6 border border-blue-500/30">
-                <i class="ph ph-handshake text-3xl"></i>
+<div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+    <!-- Form -->
+    <div class="lg:col-span-2">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="bg-gray-50 border-b border-gray-200 px-6 py-4">
+                <h3 class="font-bold text-gray-800 flex items-center"><i class="ph ph-sliders mr-2 text-blue-500"></i> Configurare Calcul</h3>
             </div>
-            <div>
-                <p class="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">Contract Curent</p>
-                <h2 class="text-2xl font-bold text-white">@Model.Title</h2>
-            </div>
-        </div>
-        
-        <div class="text-center md:text-right bg-gray-800 p-4 rounded-xl border border-gray-700">
-            <p class="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">Valoare Brută Bază</p>
-            <span class="text-3xl tracking-tight text-emerald-400">@ViewBag.OriginalValue.ToString("C")</span>
-        </div>
-    </div>
-</div>
+            <form method="post" asp-action="Strategy" class="p-6 space-y-5">
+                @Html.AntiForgeryToken()
 
-<h3 class="text-lg font-bold text-gray-800 mb-6 flex items-center">
-    <i class="ph ph-math-operations mr-2 text-blue-500"></i> Rezultate Algoritmi Inter-schimbabili
-</h3>
+                <!-- Deal din DB -->
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 uppercase tracking-widest mb-1">Deal din baza de date</label>
+                    <select asp-for="SelectedDealId" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-400 outline-none">
+                        <option value="@Guid.Empty">— Introdu manual —</option>
+                        @foreach (var d in Model.Deals)
+                        {
+                            <option value="@d.Id">@d.Title (@d.Value.ToString("N0") lei)</option>
+                        }
+                    </select>
+                </div>
 
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-    <!-- Algoritm 1 -->
-    <div class="bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-md transition-shadow relative overflow-hidden group">
-        <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-            <i class="ph ph-percent text-6xl text-blue-500"></i>
-        </div>
-        <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center mb-4 border border-blue-100">
-            <span class="font-bold tracking-tight">A1</span>
-        </div>
-        <h4 class="font-bold text-gray-800 mb-1">Politică Procentuală</h4>
-        <p class="text-xs text-gray-500 mb-6 h-8">Formulă: Scade 10% din total. (Utilizată pt. clienți fideli).</p>
-        
-        <div class="pt-4 border-t border-gray-100">
-            <span class="block text-[10px] uppercase font-bold text-gray-400 mb-1">Total Calculat</span>
-            <div class="text-2xl tracking-tight text-blue-600 font-bold">
-                @ViewBag.PercentageDiscount.ToString("C")
-            </div>
-        </div>
-    </div>
+                <div class="border-t border-dashed border-gray-200 pt-4">
+                    <p class="text-xs text-gray-400 mb-3">Sau introdu manual:</p>
+                    <div class="space-y-3">
+                        <div>
+                            <label asp-for="DealTitle" class="block text-xs font-bold text-gray-500 mb-1">Titlu deal</label>
+                            <input asp-for="DealTitle" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 outline-none" />
+                        </div>
+                        <div>
+                            <label asp-for="DealValue" class="block text-xs font-bold text-gray-500 mb-1">Valoare (lei)</label>
+                            <input asp-for="DealValue" type="number" step="0.01" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 outline-none" />
+                        </div>
+                    </div>
+                </div>
 
-    <!-- Algoritm 2 -->
-    <div class="bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-md transition-shadow relative overflow-hidden group">
-        <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-            <i class="ph ph-currency-dollar text-6xl text-purple-500"></i>
-        </div>
-        <div class="w-10 h-10 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center mb-4 border border-purple-100">
-            <span class="font-bold tracking-tight">A2</span>
-        </div>
-        <h4 class="font-bold text-gray-800 mb-1">Politică Sumă Fixă</h4>
-        <p class="text-xs text-gray-500 mb-6 h-8">Formulă: Scade 150$ per contract. (Promoție fixă sezonieră).</p>
-        
-        <div class="pt-4 border-t border-gray-100">
-            <span class="block text-[10px] uppercase font-bold text-gray-400 mb-1">Total Calculat</span>
-            <div class="text-2xl tracking-tight text-purple-600 font-bold">
-                @ViewBag.FixedDiscount.ToString("C")
-            </div>
+                <div class="border-t border-dashed border-gray-200 pt-4 space-y-3">
+                    <div>
+                        <label asp-for="PercentageRate" class="block text-xs font-bold text-gray-500 mb-1">Reducere procentuală (%)</label>
+                        <input asp-for="PercentageRate" type="number" step="0.1" min="0" max="100" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 outline-none" />
+                    </div>
+                    <div>
+                        <label asp-for="FixedAmount" class="block text-xs font-bold text-gray-500 mb-1">Reducere sumă fixă (lei)</label>
+                        <input asp-for="FixedAmount" type="number" step="0.01" min="0" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400 outline-none" />
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl shadow-md shadow-blue-600/20 transition-colors flex justify-center items-center">
+                    <i class="ph ph-calculator mr-2 text-lg"></i> Calculează Strategiile
+                </button>
+            </form>
         </div>
     </div>
 
-    <!-- Algoritm 3 -->
-    <div class="bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-md transition-shadow relative overflow-hidden group">
-        <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-            <i class="ph ph-prohibit text-6xl text-gray-500"></i>
-        </div>
-        <div class="w-10 h-10 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center mb-4 border border-gray-200">
-            <span class="font-bold tracking-tight">A3</span>
-        </div>
-        <h4 class="font-bold text-gray-800 mb-1">Nicio Politică (Default)</h4>
-        <p class="text-xs text-gray-500 mb-6 h-8">Formulă: Returnează prețul brut. (Clienți noi standard).</p>
-        
-        <div class="pt-4 border-t border-gray-100">
-            <span class="block text-[10px] uppercase font-bold text-gray-400 mb-1">Total Calculat</span>
-            <div class="text-2xl tracking-tight text-gray-700 font-bold">
-                @ViewBag.NoDiscount.ToString("C")
+    <!-- Results -->
+    <div class="lg:col-span-3">
+        @if (Model.HasResult)
+        {
+            <div class="bg-gray-900 rounded-2xl p-6 text-white mb-6 border border-gray-800">
+                <p class="text-xs text-gray-400 uppercase tracking-widest mb-1">Deal procesat</p>
+                <h2 class="text-2xl font-bold">@Model.DealTitle</h2>
+                <p class="text-emerald-400 text-xl mt-1">Valoare brută: <strong>@Model.DealValue.ToString("N2") lei</strong></p>
             </div>
-        </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                @foreach (var item in new[] {
+                    ("Fără Reducere",         "A1", Model.NoDiscountResult,  "blue",   "ph-prohibit",        "Prețul integral — nicio politică aplicată"),
+                    ($"{Model.PercentageRate}% Reducere", "A2", Model.PercentageResult, "purple", "ph-percent",         $"Scade {Model.PercentageRate}% din valoare"),
+                    ($"{Model.FixedAmount:N0} lei Fix", "A3", Model.FixedResult,      "emerald","ph-currency-dollar",  $"Scade fix {Model.FixedAmount:N0} lei")
+                })
+                {
+                    <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="w-8 h-8 rounded-full bg-@item.Item4-50 text-@item.Item4-600 flex items-center justify-center text-xs font-bold">@item.Item2</span>
+                            <i class="ph @item.Item5 text-xl text-@item.Item4-400"></i>
+                        </div>
+                        <h4 class="font-bold text-gray-800 text-sm mb-1">@item.Item1</h4>
+                        <p class="text-xs text-gray-500 mb-3">@item.Item6</p>
+                        <div class="text-2xl font-bold text-@item.Item4-600">@item.Item3.ToString("N2") lei</div>
+                        @if (item.Item3 < Model.DealValue)
+                        {
+                            <p class="text-xs text-emerald-600 mt-1">Economie: @((Model.DealValue - item.Item3).ToString("N2")) lei</p>
+                        }
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="h-full min-h-[300px] flex items-center justify-center bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
+                <div class="text-center text-gray-400">
+                    <i class="ph ph-percent text-6xl mb-3 block opacity-30"></i>
+                    <p class="font-medium">Selectează un deal din DB sau introdu manual,<br>apoi apasă <strong>Calculează</strong>.</p>
+                </div>
+            </div>
+        }
     </div>
 </div>

@@ -1,0 +1,139 @@
+@model TMPP_CRM.Controllers.TemplateMethodViewModel
+@{
+    ViewData["Title"] = "Generator Rapoarte — Template Method";
+}
+
+<div class="mb-6">
+    <a asp-controller="Lab7" asp-action="Index" class="text-gray-400 hover:text-gray-600 text-sm flex items-center mb-3">
+        <i class="ph ph-arrow-left mr-1"></i> Înapoi la Lab 7
+    </a>
+    <h1 class="text-2xl font-bold text-gray-900 flex items-center">
+        <i class="ph ph-file-text text-violet-500 mr-3 text-3xl"></i>
+        Generator de Rapoarte CRM
+    </h1>
+    <p class="text-gray-500 mt-1">Algoritmul de generare e același pentru orice raport — pașii specifici sunt personalizați de fiecare subclasă.</p>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+    <!-- Form -->
+    <div class="lg:col-span-2">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-6">
+            <div class="bg-gray-50 border-b border-gray-200 px-6 py-4">
+                <h3 class="font-bold text-gray-800 flex items-center"><i class="ph ph-sliders mr-2 text-violet-500"></i> Selectează Tipul Raportului</h3>
+            </div>
+            <form method="post" asp-action="TemplateMethod" class="p-6 space-y-4">
+                @Html.AntiForgeryToken()
+
+                @foreach (var r in Model.AvailableReports)
+                {
+                    <label class="flex items-start gap-4 cursor-pointer bg-gray-50 rounded-xl p-4 hover:bg-violet-50 border-2 border-transparent hover:border-violet-200 transition-all @(Model.SelectedType == r.Key ? "border-violet-400 bg-violet-50" : "")">
+                        <input type="radio" name="SelectedType" value="@r.Key" class="mt-1 text-violet-600 focus:ring-violet-400" @(Model.SelectedType == r.Key ? "checked" : "") />
+                        <div class="flex items-center gap-3 flex-1">
+                            <div class="w-10 h-10 rounded-xl bg-@r.Color-100 text-@r.Color-600 flex items-center justify-center flex-shrink-0">
+                                <i class="ph @r.Icon text-xl"></i>
+                            </div>
+                            <div>
+                                <span class="block font-bold text-gray-800 text-sm">@r.Name</span>
+                                <span class="block text-xs text-gray-500">@r.Description</span>
+                            </div>
+                        </div>
+                    </label>
+                }
+
+                <button type="submit" class="w-full bg-violet-600 hover:bg-violet-700 text-white font-bold py-3 px-6 rounded-xl transition-colors flex justify-center items-center">
+                    <i class="ph ph-play mr-2 text-lg"></i> Generează Raportul
+                </button>
+            </form>
+        </div>
+
+        <!-- Template skeleton diagram -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <h4 class="font-bold text-gray-700 mb-4 flex items-center"><i class="ph ph-tree-view mr-2 text-violet-400"></i> Algoritmul Șablon</h4>
+            @foreach (var (step, desc, icon) in new[] {
+                ("1. SetHeader()",     "Titlu și perioadă specifice",      "ph-text-h"),
+                ("2. FetchData()",     "Preluare date din sursă",          "ph-database"),
+                ("3. ProcessData()",   "Agregare și calcule",              "ph-calculator"),
+                ("4. BuildSections()", "Construire secțiuni specifice",    "ph-squares-four"),
+                ("5. SetFooter()",     "Subsol (poate fi override-uit)",   "ph-note"),
+            })
+            {
+                <div class="flex items-center gap-3 mb-3 last:mb-0">
+                    <div class="w-8 h-8 rounded-lg bg-violet-50 text-violet-500 flex items-center justify-center flex-shrink-0">
+                        <i class="ph @icon text-sm"></i>
+                    </div>
+                    <div>
+                        <code class="text-xs font-mono text-violet-700">@step</code>
+                        <span class="block text-xs text-gray-400">@desc</span>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Report output -->
+    <div class="lg:col-span-3">
+        @if (Model.HasResult && Model.Report != null)
+        {
+            var r = Model.Report;
+            <!-- Header -->
+            <div class="bg-gradient-to-br from-violet-700 to-violet-900 rounded-2xl p-8 text-white mb-6 relative overflow-hidden">
+                <div class="absolute inset-0 opacity-5">
+                    <i class="ph ph-file-text absolute text-[15rem] -right-10 -top-10"></i>
+                </div>
+                <div class="flex items-center gap-3 mb-3">
+                    <span class="px-3 py-1 rounded-full bg-white/20 text-xs font-bold uppercase tracking-widest">@r.ReportType</span>
+                </div>
+                <h2 class="text-2xl font-bold mb-1">@r.Title</h2>
+                <p class="text-violet-200 text-sm">@r.Subtitle</p>
+                <p class="text-violet-300 text-xs mt-3">Generat la: @r.GeneratedAt</p>
+            </div>
+
+            <!-- Steps trace -->
+            <div class="bg-gray-900 rounded-2xl p-5 mb-6 font-mono text-sm">
+                <p class="text-gray-400 text-xs uppercase tracking-widest mb-3">Execuție algoritm șablon</p>
+                @foreach (var step in r.Steps)
+                {
+                    <div class="flex items-center gap-2 text-emerald-400 mb-1">
+                        <i class="ph ph-check text-emerald-500"></i>
+                        <span>@step</span>
+                    </div>
+                }
+            </div>
+
+            <!-- Summary -->
+            <div class="bg-violet-50 border border-violet-100 rounded-xl px-5 py-4 mb-6 text-sm text-violet-800">
+                <span class="font-bold">Date preluate: </span>@r.Summary
+            </div>
+
+            <!-- Sections -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                @foreach (var s in r.Sections)
+                {
+                    <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5 flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-xl bg-@s.Color-50 text-@s.Color-500 flex items-center justify-center flex-shrink-0">
+                            <i class="ph @s.Icon text-xl"></i>
+                        </div>
+                        <div>
+                            <h5 class="font-bold text-gray-800 text-sm">@s.Title</h5>
+                            <p class="text-gray-600 text-xs mt-1">@s.Content</p>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Footer -->
+            <div class="bg-gray-50 border border-gray-200 rounded-xl px-5 py-3 text-xs text-gray-500 flex items-center gap-2">
+                <i class="ph ph-info text-gray-400"></i>
+                @r.Footer
+            </div>
+        }
+        else
+        {
+            <div class="flex flex-col items-center justify-center h-80 bg-white rounded-2xl border border-dashed border-gray-200 text-gray-400">
+                <i class="ph ph-file-text text-6xl mb-4 text-violet-200"></i>
+                <p class="font-medium">Selectează un tip de raport</p>
+                <p class="text-sm">și apasă Generează pentru a vedea algoritmul șablon în acțiune</p>
+            </div>
+        }
+    </div>
+</div>

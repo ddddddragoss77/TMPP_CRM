@@ -1,98 +1,133 @@
-@model TMPP_CRM.Domain.Entities.Lead
+@model TMPP_CRM.Controllers.MementoViewModel
 @{
-    ViewData["Title"] = "Manager Backup Date";
+    ViewData["Title"] = "Memento — Snapshot & Restore";
+    var statuses = new[] { "New", "Contacted", "Qualified", "Converted", "Lost" };
 }
 
-<div class="mb-6 flex items-center justify-between">
-    <div>
-        <h1 class="text-2xl font-bold text-gray-900 flex items-center">
-            <i class="ph ph-floppy-disk text-rose-600 mr-3 text-3xl"></i>
-            Snapshot & Rollback Lead
-        </h1>
-        <p class="text-gray-500 mt-1">Sistem automat de protecție a datelor: salvează snapshot-uri invizibile la editarea entităților.</p>
-    </div>
+<div class="mb-6">
+    <h1 class="text-2xl font-bold text-gray-900 flex items-center">
+        <i class="ph ph-floppy-disk text-rose-600 mr-3 text-3xl"></i>
+        Snapshot & Rollback Lead — Date Reale
+    </h1>
+    <p class="text-gray-500 mt-1">Editează lead-uri reale din baza de date. Snapshot-ul este salvat înainte de fiecare modificare — poți restaura oricând.</p>
 </div>
 
-<div class="bg-white border border-gray-100 rounded-xl p-6 mb-8 text-sm text-gray-600 shadow-sm flex items-start gap-4">
-    <i class="ph ph-lifebuoy text-rose-500 text-2xl"></i>
-    <div>
-        <strong class="text-gray-800">Protecție prin "State Capture":</strong>
-        Când un utilizator deschide un Lead pentru editare, platforma creează în memorie un obiect imutabil care stochează valorile inițiale. Dacă sesiunea de editare este anulată, sistemul încarcă datele din acest obiect ascuns, fără să fie necesară re-interogarea bazei de date.
-    </div>
-</div>
-
-<div class="bg-gray-50 rounded-3xl p-8 border border-gray-200 mb-8 relative overflow-hidden">
-    <div class="absolute top-0 right-0 -mt-8 -mr-8 text-gray-200 opacity-50">
-        <i class="ph ph-database text-9xl"></i>
-    </div>
-    
-    <h3 class="text-xl font-bold text-gray-800 mb-6 relative z-10 flex items-center">
-        <i class="ph ph-clock-counter-clockwise mr-2 text-rose-500"></i>
-        Flux de Salvare și Restaurare (#LD-@Model.Id)
-    </h3>
-
-    <div class="grid md:grid-cols-3 gap-6 relative z-10">
-        <!-- State 1 -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden transform transition-all duration-300">
-            <div class="bg-gray-100 border-b border-gray-200 p-4 text-center">
-                <span class="text-xs font-bold text-gray-500 uppercase tracking-widest flex justify-center items-center">
-                    <i class="ph ph-camera mr-1 text-lg"></i> 1. Snapshot Capturat
-                </span>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <!-- Form editare -->
+    <div class="lg:col-span-5">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="bg-gray-50 border-b border-gray-200 px-6 py-4">
+                <h3 class="font-bold text-gray-800 flex items-center"><i class="ph ph-pencil-simple mr-2 text-rose-500"></i> Editare Lead Real</h3>
             </div>
-            <div class="p-6">
-                <p class="text-xs text-gray-500 mb-2 text-center">Date originale din baza de date:</p>
-                <div class="font-medium text-xs text-gray-700 bg-gray-50 p-4 rounded-xl border border-dashed border-gray-300 text-center break-words shadow-inner">
-                    @ViewBag.InitialState
+            <form method="post" asp-action="Memento" class="p-6 space-y-4">
+                @Html.AntiForgeryToken()
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Selectează Lead</label>
+                    <select asp-for="LeadId" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-rose-400 outline-none">
+                        @foreach (var l in Model.Leads)
+                        {
+                            <option value="@l.Id">@l.FirstName @l.LastName (@l.Status)</option>
+                        }
+                    </select>
                 </div>
-            </div>
-            <div class="bg-gray-50 p-3 text-center border-t border-gray-100 text-xs text-gray-400 font-medium">
-                Memory Block: 0x1A4F...
-            </div>
-        </div>
 
-        <!-- State 2 -->
-        <div class="bg-white rounded-2xl shadow-sm border border-blue-100 overflow-hidden transform transition-all duration-300 relative">
-            <div class="absolute -left-3 top-1/2 -translate-y-1/2 text-gray-300 hidden md:block">
-                <i class="ph ph-arrow-right text-2xl"></i>
-            </div>
-            <div class="bg-blue-50 border-b border-blue-100 p-4 text-center">
-                <span class="text-xs font-bold text-blue-600 uppercase tracking-widest flex justify-center items-center">
-                    <i class="ph ph-pencil-simple mr-1 text-lg"></i> 2. Modificări în Sesiune
-                </span>
-            </div>
-            <div class="p-6">
-                <p class="text-xs text-blue-500 mb-2 text-center">Date editate (nesalvate încă):</p>
-                <div class="font-medium text-xs text-blue-800 bg-blue-50/50 p-4 rounded-xl border border-dashed border-blue-300 text-center break-words shadow-inner">
-                    @ViewBag.ModifiedState
-                </div>
-            </div>
-            <div class="bg-blue-50/30 p-3 text-center border-t border-blue-50 text-xs text-blue-400 font-medium flex justify-center space-x-4">
-                <span><i class="ph ph-warning-circle"></i> Unsaved</span>
-            </div>
-        </div>
+                <p class="text-xs text-gray-400 pt-2 border-t border-dashed border-gray-200">Câmpurile de mai jos înlocuiesc valorile curente (lasă gol pentru a păstra):</p>
 
-        <!-- State 3 -->
-        <div class="bg-white rounded-2xl shadow-sm border border-rose-100 overflow-hidden transform transition-all duration-300 relative">
-            <div class="absolute -left-3 top-1/2 -translate-y-1/2 text-blue-200 hidden md:block">
-                <i class="ph ph-arrow-right text-2xl"></i>
-            </div>
-            <div class="bg-rose-50 border-b border-rose-100 p-4 text-center">
-                <span class="text-xs font-bold text-rose-600 uppercase tracking-widest flex justify-center items-center">
-                    <i class="ph ph-arrow-u-up-left mr-1 text-lg"></i> 3. Rollback Executat
-                </span>
-            </div>
-            <div class="p-6">
-                <p class="text-xs text-rose-500 mb-2 text-center">Date restaurate din snapshot:</p>
-                <div class="font-medium text-xs text-rose-800 bg-rose-50 p-4 rounded-xl border border-dashed border-rose-300 text-center break-words shadow-inner relative">
-                    <div class="absolute -top-2 -right-2 w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center text-white text-xs border-2 border-white shadow-sm">
-                        <i class="ph ph-check"></i>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label asp-for="NewFirstName" class="block text-xs text-gray-500 mb-1">Prenume nou</label>
+                        <input asp-for="NewFirstName" placeholder="ex: Ion" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-rose-400 outline-none" />
                     </div>
-                    @ViewBag.RestoredState
+                    <div>
+                        <label asp-for="NewLastName" class="block text-xs text-gray-500 mb-1">Nume nou</label>
+                        <input asp-for="NewLastName" placeholder="ex: Popescu" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-rose-400 outline-none" />
+                    </div>
                 </div>
+                <div>
+                    <label asp-for="NewEmail" class="block text-xs text-gray-500 mb-1">Email nou</label>
+                    <input asp-for="NewEmail" placeholder="ex: nou@email.com" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-rose-400 outline-none" />
+                </div>
+                <div>
+                    <label asp-for="NewPhone" class="block text-xs text-gray-500 mb-1">Telefon nou</label>
+                    <input asp-for="NewPhone" placeholder="ex: +40712345678" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-rose-400 outline-none" />
+                </div>
+                <div>
+                    <label asp-for="NewStatus" class="block text-xs text-gray-500 mb-1">Status nou</label>
+                    <select asp-for="NewStatus" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-rose-400 outline-none">
+                        <option value="">— Păstrează curent —</option>
+                        @foreach (var s in statuses)
+                        {
+                            <option value="@s">@s</option>
+                        }
+                    </select>
+                </div>
+
+                <button type="submit" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-3 rounded-xl shadow-md shadow-rose-600/20 transition-colors flex justify-center items-center">
+                    <i class="ph ph-floppy-disk mr-2 text-lg"></i> Salvează Modificarea (cu Snapshot)
+                </button>
+            </form>
+        </div>
+
+        @if (Model.HasResult)
+        {
+            <div class="mt-5 grid grid-cols-1 gap-3">
+                @foreach (var (label, value, color) in new[] {
+                    ("📸 Snapshot (înainte)", Model.SnapshotState, "gray"),
+                    ("✏️ Modificat (salvat)", Model.ModifiedState, "blue")
+                })
+                {
+                    <div class="bg-@color-50 border border-@color-200 rounded-xl p-4">
+                        <p class="text-xs font-bold text-@color-600 uppercase tracking-widest mb-2">@label</p>
+                        <p class="text-sm font-mono text-@color-800">@value</p>
+                    </div>
+                }
             </div>
-            <div class="bg-rose-50 p-3 text-center border-t border-rose-100 text-xs text-rose-400 font-medium">
-                Source: Memory Block 0x1A4F...
+        }
+    </div>
+
+    <!-- Snapshots în DB -->
+    <div class="lg:col-span-7">
+        <div class="bg-gray-900 rounded-2xl border border-gray-800 overflow-hidden h-full">
+            <div class="bg-gray-950 px-5 py-4 border-b border-gray-800 flex items-center justify-between">
+                <h4 class="text-sm font-bold text-gray-300 flex items-center">
+                    <i class="ph ph-stack mr-2 text-rose-400"></i> Snapshots Salvate în DB (@Model.Snapshots.Count)
+                </h4>
+                <span class="text-xs text-gray-500">Click Restore pentru rollback</span>
             </div>
+
+            @if (!Model.Snapshots.Any())
+            {
+                <div class="p-8 text-center text-gray-600">
+                    <i class="ph ph-floppy-disk text-5xl mb-3 block opacity-20"></i>
+                    <p class="text-sm">Niciun snapshot salvat încă.<br>Editează un lead pentru a crea primul snapshot.</p>
+                </div>
+            }
+            else
+            {
+                <div class="divide-y divide-gray-800 overflow-y-auto max-h-[600px]">
+                    @foreach (var snap in Model.Snapshots)
+                    {
+                        <div class="px-5 py-4 hover:bg-gray-800/50 transition-colors">
+                            <div class="flex items-start justify-between mb-2">
+                                <div>
+                                    <span class="text-white font-bold text-sm">@snap.FirstName @snap.LastName</span>
+                                    <span class="ml-2 text-xs bg-gray-800 text-gray-400 px-2 py-0.5 rounded-full">@snap.Label</span>
+                                </div>
+                                <span class="text-gray-500 text-xs">@snap.CreatedAt.ToString("dd.MM.yyyy HH:mm:ss")</span>
+                            </div>
+                            <p class="text-gray-400 text-xs mb-3 font-mono">@snap.Email | @snap.Phone | @snap.Status</p>
+                            <form method="post" asp-action="RestoreSnapshot">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="snapshotId" value="@snap.Id" />
+                                <button type="submit" class="text-xs bg-rose-900/50 hover:bg-rose-800 text-rose-300 border border-rose-800 px-3 py-1.5 rounded-lg transition-colors flex items-center">
+                                    <i class="ph ph-arrow-u-up-left mr-1"></i> Restaurează Lead-ul la această stare
+                                </button>
+                            </form>
+                        </div>
+                    }
+                </div>
+            }
         </div>
     </div>
 </div>

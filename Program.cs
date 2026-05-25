@@ -1,27 +1,45 @@
+using Microsoft.EntityFrameworkCore;
+using TMPP_CRM.Application.Interfaces;
+using TMPP_CRM.Application.Services;
+using TMPP_CRM.Domain.Interfaces;
+using TMPP_CRM.Infrastructure.Data;
+using TMPP_CRM.Infrastructure.Persistence;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// ─── Services ────────────────────────────────────────────────────────────────
 builder.Services.AddControllersWithViews();
 
-// Clean Architecture - Dependency Injection
-builder.Services.AddScoped(typeof(TMPP_CRM.Domain.Interfaces.IRepository<>), typeof(TMPP_CRM.Infrastructure.Persistence.InMemoryRepository<>));
-builder.Services.AddScoped<TMPP_CRM.Application.Interfaces.ILeadService, TMPP_CRM.Application.Services.LeadService>();
+// SQLite + EF Core
+builder.Services.AddDbContext<CrmDbContext>(opt =>
+    opt.UseSqlite("Data Source=crm.db"));
+
+// Generic repository (EF-backed)
+builder.Services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
+
+// Application services
+builder.Services.AddScoped<ILeadService, LeadService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// ─── Ensure DB created + Seed ────────────────────────────────────────────────
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<CrmDbContext>();
+    db.Database.EnsureCreated();
+    await DbSeeder.SeedAsync(db);
+}
+
+// ─── Pipeline ────────────────────────────────────────────────────────────────
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
-
 app.UseAuthorization();
 
 app.MapControllerRoute(

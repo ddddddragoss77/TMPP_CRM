@@ -1,0 +1,168 @@
+@model TMPP_CRM.Controllers.MediatorViewModel
+@{
+    ViewData["Title"] = "Turn Control ATC — Mediator";
+}
+
+<div class="mb-6">
+    <a asp-controller="Lab7" asp-action="Index" class="text-gray-400 hover:text-gray-600 text-sm flex items-center mb-3">
+        <i class="ph ph-arrow-left mr-1"></i> Înapoi la Lab 7
+    </a>
+    <h1 class="text-2xl font-bold text-gray-900 flex items-center">
+        <i class="ph ph-airplane text-sky-500 mr-3 text-3xl"></i>
+        Turn de Control Aerian (ATC)
+    </h1>
+    <p class="text-gray-500 mt-1">Avioanele nu comunică direct — toate mesajele sunt rutate prin turnul mediator.</p>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+    <!-- Form -->
+    <div class="lg:col-span-2">
+        <form method="post" asp-action="Mediator">
+            @Html.AntiForgeryToken()
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-4">
+                <div class="bg-gray-50 border-b border-gray-200 px-6 py-4">
+                    <h3 class="font-bold text-gray-800 flex items-center"><i class="ph ph-airplane-tilt mr-2 text-sky-500"></i> Avioane Înregistrate</h3>
+                </div>
+                <div class="p-6 space-y-4">
+                    @for (int i = 0; i < 2; i++)
+                    {
+                        <div class="bg-gray-50 rounded-xl p-4 border border-gray-100">
+                            <p class="text-xs font-bold text-sky-600 uppercase tracking-widest mb-3">Avion @(i + 1)</p>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="text-xs text-gray-500 mb-1 block">Indicativ</label>
+                                    <input name="Callsigns" value="@(i == 0 ? "ROT401" : "WZZ1234")" class="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-sm font-mono focus:ring-2 focus:ring-sky-400 outline-none" />
+                                </div>
+                                <div>
+                                    <label class="text-xs text-gray-500 mb-1 block">Tip aeronavă</label>
+                                    <input name="AircraftTypes" value="@(i == 0 ? "B737" : "A320")" class="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-sm focus:ring-2 focus:ring-sky-400 outline-none" />
+                                </div>
+                                <div>
+                                    <label class="text-xs text-gray-500 mb-1 block">Origine</label>
+                                    <input name="Origins" value="@(i == 0 ? "OTP" : "CLJ")" class="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-sm focus:ring-2 focus:ring-sky-400 outline-none" />
+                                </div>
+                                <div>
+                                    <label class="text-xs text-gray-500 mb-1 block">Destinație</label>
+                                    <input name="Destinations" value="@(i == 0 ? "CDG" : "LHR")" class="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-sm focus:ring-2 focus:ring-sky-400 outline-none" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-4">
+                <div class="bg-gray-50 border-b border-gray-200 px-6 py-4">
+                    <h3 class="font-bold text-gray-800 flex items-center"><i class="ph ph-chat-dots mr-2 text-sky-500"></i> Mesaje (indicativ|mesaj)</h3>
+                </div>
+                <div class="p-6 space-y-3">
+                    @foreach (var (msg, label) in new[] {
+                        ("ROT401|REQUEST_LANDING",  "ROT401 → Cerere aterizare"),
+                        ("WZZ1234|REQUEST_TAKEOFF", "WZZ1234 → Cerere decolare"),
+                        ("ROT401|EMERGENCY",        "ROT401 → Urgență (broadcast)"),
+                    })
+                    {
+                        <label class="flex items-center gap-3 cursor-pointer bg-gray-50 rounded-xl px-3 py-2 hover:bg-sky-50 border border-transparent hover:border-sky-200 transition-colors">
+                            <input type="checkbox" name="Messages" value="@msg" class="rounded text-sky-600 focus:ring-sky-400" checked />
+                            <span class="text-sm text-gray-700">@label</span>
+                            <code class="ml-auto text-xs text-sky-600 bg-sky-50 px-2 py-0.5 rounded font-mono">@msg.Split('|')[1]</code>
+                        </label>
+                    }
+                </div>
+            </div>
+
+            <button type="submit" class="w-full bg-sky-600 hover:bg-sky-700 text-white font-bold py-3 px-6 rounded-xl transition-colors flex justify-center items-center">
+                <i class="ph ph-broadcast mr-2 text-lg"></i> Transmite prin Turn ATC
+            </button>
+        </form>
+    </div>
+
+    <!-- Results -->
+    <div class="lg:col-span-3">
+        @if (Model.HasResult)
+        {
+            <!-- Registered aircraft -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-6">
+                <div class="bg-gray-50 border-b border-gray-200 px-6 py-4">
+                    <h4 class="font-bold text-gray-700 flex items-center"><i class="ph ph-list-checks mr-2 text-sky-400"></i> Aeronave Înregistrate în Turn</h4>
+                </div>
+                <div class="divide-y divide-gray-50">
+                    @foreach (var a in Model.RegisteredAircraft)
+                    {
+                        <div class="px-6 py-4 flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-sky-100 text-sky-600 flex items-center justify-center font-bold text-sm">
+                                <i class="ph ph-airplane"></i>
+                            </div>
+                            <div>
+                                <span class="font-bold text-gray-800 font-mono">@a.Callsign</span>
+                                <span class="text-gray-500 text-sm ml-2">@a.AircraftType</span>
+                            </div>
+                            <div class="ml-auto text-sm text-gray-500">
+                                @a.Origin → @a.Destination
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Communication log -->
+            <div class="space-y-4">
+                @foreach (var evt in Model.Events)
+                {
+                    var typeColor = evt.Type == "clearance" ? "emerald" : evt.Type == "warning" ? "red" : "blue";
+                    var typeIcon  = evt.Type == "clearance" ? "ph-check-circle" : evt.Type == "warning" ? "ph-warning" : "ph-chat";
+                    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                        <div class="bg-@typeColor-50 border-b border-@typeColor-100 px-5 py-3 flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <i class="ph @typeIcon text-@typeColor-500 text-lg"></i>
+                                <span class="font-bold text-gray-800 font-mono text-sm">@evt.From</span>
+                                <i class="ph ph-arrow-right text-gray-400 text-xs"></i>
+                                <span class="font-mono text-sm text-sky-700">Turn ATC</span>
+                            </div>
+                            <span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-@typeColor-100 text-@typeColor-700 uppercase">@evt.Type</span>
+                        </div>
+                        <div class="p-5 space-y-3">
+                            <div class="flex gap-3">
+                                <div class="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                    <i class="ph ph-airplane text-gray-500 text-xs"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-400 mb-0.5">Mesaj trimis</p>
+                                    <p class="text-sm font-mono text-gray-700 bg-gray-50 rounded px-2 py-1">@evt.Message</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-3">
+                                <div class="w-6 h-6 rounded-full bg-@typeColor-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                    <i class="ph ph-tower text-@typeColor-500 text-xs"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-400 mb-0.5">Răspuns Turn ATC</p>
+                                    <p class="text-sm text-@typeColor-700 font-medium">@evt.Response</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            @if (Model.RegisteredAircraft.Any(a => a.ReceivedInstructions.Any()))
+            {
+                <div class="mt-6 bg-red-50 border border-red-200 rounded-2xl p-5">
+                    <h4 class="font-bold text-red-800 flex items-center mb-3"><i class="ph ph-warning-diamond mr-2"></i> Instrucțiuni Broadcast (Urgență)</h4>
+                    @foreach (var a in Model.RegisteredAircraft.Where(a => a.ReceivedInstructions.Any()))
+                    {
+                        <div class="text-sm mb-1"><span class="font-mono font-bold text-red-700">@a.Callsign</span>: @string.Join(", ", a.ReceivedInstructions)</div>
+                    }
+                </div>
+            }
+        }
+        else
+        {
+            <div class="flex flex-col items-center justify-center h-80 bg-white rounded-2xl border border-dashed border-gray-200 text-gray-400">
+                <i class="ph ph-airplane text-6xl mb-4 text-sky-200"></i>
+                <p class="font-medium">Configurează avioanele și trimite mesaje</p>
+                <p class="text-sm">pentru a vedea medierea prin turnul ATC</p>
+            </div>
+        }
+    </div>
+</div>
